@@ -64,7 +64,7 @@ export function Footer() {
           >
             <h4 className="font-heading font-semibold text-sm mb-4">Navigation</h4>
             <ul className="space-y-2.5">
-              {['Home', 'Shop', 'Admin', 'Admin Login'].map((item, index) => (
+              {['Home', 'Shop'].map((item, index) => (
                 <motion.li
                   key={item}
                   initial={{ opacity: 0, x: -10 }}
@@ -73,7 +73,7 @@ export function Footer() {
                   transition={{ duration: 0.4, delay: 0.4 + index * 0.1 }}
                 >
                   <Link
-                    to={item === 'Home' ? '/' : item === 'Shop' ? '/shop' : item === 'Admin' ? '/admin' : '/admin-login'}
+                    to={item === 'Home' ? '/' : '/shop'}
                     className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                   >
                     {item}
