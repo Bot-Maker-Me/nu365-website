@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import { ArrowRight, Microscope, ShieldCheck, Beaker, Atom, FlaskConical, FileCheck } from 'lucide-react';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { Hero } from '@/components/Hero';
 import { AnimatedButton } from '@/components/AnimatedButton';
-import { PremiumButton } from '@/components/PremiumButton';
 import { SectionHeading } from '@/components/SectionHeading';
 import { ProductCard } from '@/components/ProductCard';
 import { ScrollVelocityContainer, ScrollVelocityRow } from '@/components/ui/scroll-based-velocity';
@@ -123,11 +123,12 @@ export function LandingPage() {
               title="From our latest catalog"
               description="A selection of our most recent and in-demand research compounds."
             />
-            <PremiumButton to="/shop" variant="secondary" size="md">
-              <span className="flex items-center gap-2">
-                View All <ArrowRight className="w-4 h-4" />
-              </span>
-            </PremiumButton>
+            <Link
+              to="/shop"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-lg border border-white/20 text-white font-semibold hover:bg-white/10 transition-colors"
+            >
+              View All <ArrowRight className="w-4 h-4" />
+            </Link>
           </div>
 
           {productsLoading ? (

@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, ShoppingCart } from 'lucide-react';
-import { PremiumButton } from './PremiumButton';
 import { Logo } from './Logo';
 import { useSiteSettings } from '@/hooks/useSiteSettings';
 import { useCart } from '@/context/CartContext';
@@ -84,9 +83,12 @@ export function Navbar() {
                 )}
               </Link>
             </motion.div>
-            <PremiumButton to="/shop" variant="primary" size="sm">
+            <Link
+              to="/shop"
+              className="px-6 py-2 rounded-lg bg-white text-black text-sm font-semibold hover:bg-white/90 transition-colors"
+            >
               Browse Catalog
-            </PremiumButton>
+            </Link>
           </div>
 
           <div className="md:hidden flex items-center gap-2">
@@ -148,9 +150,12 @@ export function Navbar() {
                   </Link>
                 </motion.div>
               ))}
-              <PremiumButton to="/shop" variant="primary" size="sm" className="mt-2 w-full">
+              <Link
+                to="/shop"
+                className="mt-2 w-full px-4 py-2.5 rounded-lg bg-white text-black text-sm font-semibold hover:bg-white/90 transition-colors"
+              >
                 Browse Catalog
-              </PremiumButton>
+              </Link>
             </div>
           </motion.div>
         )}

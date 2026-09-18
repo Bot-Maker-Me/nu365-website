@@ -3,9 +3,7 @@ import { ArrowRight, FileText, ShieldCheck, MapPin, Package } from 'lucide-react
 import { Link } from 'react-router-dom';
 import { useSiteSettings } from '@/hooks/useSiteSettings';
 import { MedicineAnimation } from '@/components/MedicineAnimation';
-import { Meteors } from '@/components/ui/meteors';
-import { BlurFade } from '@/components/ui/blur-fade';
-import { PremiumButton } from '@/components/PremiumButton';
+import { Floating3DParticles } from '@/components/ui/floating-3d-particles';
 
 const trustIndicators = [
   { icon: ShieldCheck, label: 'Janoshik Verified' },
@@ -43,9 +41,9 @@ export function Hero() {
       {/* Medicine animation background */}
       <MedicineAnimation />
 
-      {/* Meteor effect */}
+      {/* Floating 3D particles */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-10">
-        <Meteors number={12} />
+        <Floating3DParticles color="#8B5CF6" quantity={400} />
       </div>
 
       {/* Dark overlay for text contrast */}
@@ -100,18 +98,20 @@ export function Hero() {
             variants={fadeUp}
             className="mt-10 flex flex-col sm:flex-row items-start gap-4"
           >
-            <PremiumButton to="/shop" variant="primary" size="lg">
-              <span className="flex items-center gap-2">
-                SHOP ALL PRODUCTS
-                <ArrowRight className="w-4 h-4" />
-              </span>
-            </PremiumButton>
-            <PremiumButton to="/shop" variant="secondary" size="lg">
-              <span className="flex items-center gap-2">
-                <FileText className="w-4 h-4" />
-                VIEW LAB REPORTS
-              </span>
-            </PremiumButton>
+            <Link
+              to="/shop"
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-lg bg-white text-black font-semibold hover:bg-white/90 transition-colors"
+            >
+              SHOP ALL PRODUCTS
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+            <Link
+              to="/shop"
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-lg border border-white/20 text-white font-semibold hover:bg-white/10 transition-colors"
+            >
+              <FileText className="w-4 h-4" />
+              VIEW LAB REPORTS
+            </Link>
           </motion.div>
 
           {/* Trust indicators */}
