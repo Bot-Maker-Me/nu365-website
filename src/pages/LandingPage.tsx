@@ -29,16 +29,6 @@ const trustBadges = [
   'Peer Reviewed',
 ];
 
-const container = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.08 } },
-};
-
-const item = {
-  hidden: { opacity: 0, y: 15 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] } },
-};
-
 export function LandingPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [productsLoading, setProductsLoading] = useState(true);
@@ -90,45 +80,37 @@ export function LandingPage() {
             description="Every aspect of our process is designed to meet the exacting standards of today's leading research institutions."
           />
 
-          <motion.div
-            variants={container}
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true, margin: '-100px' }}
-            className="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-          >
+          <div className="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {features.map((feature, index) => (
-              <BlurFade key={feature.title} inView delay={index * 0.1}>
-                <motion.div variants={item}>
+              <motion.div key={feature.title} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.4, delay: index * 0.1 }}>
+                <motion.div
+                  className="glass-card rounded-2xl p-6 h-full"
+                  whileHover={{
+                    scale: 1.02,
+                    boxShadow: "0 0 30px rgba(59, 130, 246, 0.15)"
+                  }}
+                  transition={{
+                    type: "spring",
+                    stiffness: 300,
+                    damping: 20
+                  }}
+                >
                   <motion.div
-                    className="glass-card rounded-2xl p-6 h-full"
+                    className="w-12 h-12 rounded-xl bg-secondary/50 flex items-center justify-center mb-5 border border-[#1F1F2E]"
                     whileHover={{
-                      scale: 1.02,
-                      boxShadow: "0 0 30px rgba(59, 130, 246, 0.15)"
+                      rotate: 360,
+                      backgroundColor: "rgba(59, 130, 246, 0.2)"
                     }}
-                    transition={{
-                      type: "spring",
-                      stiffness: 300,
-                      damping: 20
-                    }}
+                    transition={{ duration: 0.6 }}
                   >
-                    <motion.div
-                      className="w-12 h-12 rounded-xl bg-secondary/50 flex items-center justify-center mb-5 border border-[#1F1F2E]"
-                      whileHover={{
-                        rotate: 360,
-                        backgroundColor: "rgba(59, 130, 246, 0.2)"
-                      }}
-                      transition={{ duration: 0.6 }}
-                    >
-                      <feature.icon className="w-6 h-6 text-primary" />
-                    </motion.div>
-                    <h3 className="font-heading font-semibold text-lg mb-2">{feature.title}</h3>
-                    <p className="text-sm text-muted-foreground leading-relaxed">{feature.desc}</p>
+                    <feature.icon className="w-6 h-6 text-primary" />
                   </motion.div>
+                  <h3 className="font-heading font-semibold text-lg mb-2">{feature.title}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{feature.desc}</p>
                 </motion.div>
-              </BlurFade>
+              </motion.div>
             ))}
-          </motion.div>
+          </div>
         </div>
       </section>
 
