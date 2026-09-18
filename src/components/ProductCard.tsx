@@ -1,0 +1,85 @@
+import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
+import type { Product } from '@/lib/supabaseClient';
+import { CardContainer, CardBody, CardItem } from '@/components/ui/3d-card';
+
+type Props = {
+  product: Product;
+  index?: number;
+};
+
+export function ProductCard({ product, index = 0 }: Props) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-50px' }}
+      transition={{ duration: 0.4, delay: (index % 3) * 0.08, ease: [0.22, 1, 0.36, 1] }}
+      style={{ willChange: 'transform' }}
+    >
+      <CardContainer className="w-full" containerClassName="py-0">
+        <CardBody className="w-full h-auto [&>*]:[transform-style:preserve-3d]">
+          <Link to={`/product/${product.slug}`} className="group block">
+            <div className="glass-card rounded-2xl overflow-hidden h-full">
+              <CardItem translateZ="20" className="w-full">
+                <div className="relative aspect-square overflow-hidden bg-secondary/30">
+                  <img
+                    src={product.image_url ?? `https://picsum.photos/seed/${product.slug}/600/600`}
+                    alt={product.name}
+                    loading="lazy"
+                    decoding="async"
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    style={{ willChange: 'transform' }}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0F]/80 via-transparent to-transparent" />
+                  {product.category && (
+                    <div className="absolute top-3 left-3">
+                      <span className="px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wider glass text-muted-foreground">
+                        {product.category}
+                      </span>
+                    </div>
+                  )}
+                  <div className="absolute top-3 right-3">
+                    {product.in_stock ? (
+                      <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-semibold bg-green-500/10 text-green-400 border border-green-500/20">
+                        <span className="w-1.5 h-1.5 rounded-full bg-green-400 pulse-dot" />
+                        In Stock
+                      </span>
+                    ) : (
+                      <span className="px-2.5 py-1 rounded-full text-[10px] font-semibold bg-red-500/10 text-red-400 border border-red-500/20">
+                        Out of Stock
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </CardItem>
+
+              <div className="p-5">
+                <CardItem translateZ="10" className="w-full">
+                  <h3 className="font-heading font-semibold text-base mb-1 group-hover:gradient-text transition-all">
+                    {product.name}
+                  </h3>
+                </CardItem>
+                <CardItem translateZ="5" className="w-full">
+                  <p className="text-sm text-muted-foreground line-clamp-2 mb-4 leading-relaxed">
+                    {product.description}
+                  </p>
+                </CardItem>
+                <CardItem translateZ="15" className="w-full">
+                  <div className="flex items-center justify-between">
+                    <span className="text-lg font-bold font-heading">
+                      ${Number(product.price).toFixed(2)}
+                    </span>
+                    <span className="text-xs text-muted-foreground">
+                      {product.quantity > 0 ? `${product.quantity} available` : 'N/A'}
+                    </span>
+                  </div>
+                </CardItem>
+              </div>
+            </div>
+          </Link>
+        </CardBody>
+      </CardContainer>
+    </motion.div>
+  );
+}
