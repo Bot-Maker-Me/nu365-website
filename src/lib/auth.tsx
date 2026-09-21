@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, type ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
 
 type AuthContextType = {
   session: any | null;
@@ -10,21 +10,52 @@ type AuthContextType = {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+// Hardcoded admin credentials (in production, use proper auth system)
+const ADMIN_CREDENTIALS = {
+  email: 'piush80545@gmail.com',
+  password: 'Piyush@112008'
+};
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<any | null>(null);
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    // Check for existing session on mount
+    const storedSession = localStorage.getItem('admin_session');
+    if (storedSession) {
+      setSession(JSON.parse(storedSession));
+    }
+  }, []);
+
   const signIn = async (email: string, password: string) => {
-    // Placeholder implementation
-    return { error: 'Authentication not configured' };
+    setLoading(true);
+    
+    // Simulate network delay
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
+    if (email === ADMIN_CREDENTIALS.email && password === ADMIN_CREDENTIALS.password) {
+      const sessionData = {
+        email: email,
+        timestamp: new Date().toISOString()
+      };
+      setSession(sessionData);
+      localStorage.setItem('admin_session', JSON.stringify(sessionData));
+      setLoading(false);
+      return { error: null };
+    } else {
+      setLoading(false);
+      return { error: 'Invalid email or password' };
+    }
   };
 
   const signOut = async () => {
-    // Placeholder implementation
+    setSession(null);
+    localStorage.removeItem('admin_session');
   };
 
   return (
-    <AuthContext.Provider value={{ session, user: null, loading, signIn, signOut }}>
+    <AuthContext.Provider value={{ session, user: session, loading, signIn, signOut }}>
       {children}
     </AuthContext.Provider>
   );

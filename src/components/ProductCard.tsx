@@ -39,18 +39,6 @@ export function ProductCard({ product, index = 0 }: Props) {
                       </span>
                     </div>
                   )}
-                  <div className="absolute top-3 right-3">
-                    {product.in_stock ? (
-                      <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-semibold bg-green-500/10 text-green-400 border border-green-500/20">
-                        <span className="w-1.5 h-1.5 rounded-full bg-green-400 pulse-dot" />
-                        In Stock
-                      </span>
-                    ) : (
-                      <span className="px-2.5 py-1 rounded-full text-[10px] font-semibold bg-red-500/10 text-red-400 border border-red-500/20">
-                        Out of Stock
-                      </span>
-                    )}
-                  </div>
                 </div>
               </CardItem>
 

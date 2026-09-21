@@ -1,19 +1,16 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, ShoppingCart } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { Logo } from './Logo';
 import { useSiteSettings } from '@/hooks/useSiteSettings';
-import { useCart } from '@/context/CartContext';
 
 const links = [
   { label: 'Home', to: '/' },
-  { label: 'Shop', to: '/shop' },
 ];
 
 export function Navbar() {
   const { settings } = useSiteSettings();
-  const { totalItems } = useCart();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
@@ -65,51 +62,15 @@ export function Navbar() {
           </div>
 
           <div className="hidden md:flex items-center gap-3">
-            <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
-              <Link
-                to="/cart"
-                className="relative p-2 text-foreground hover:text-primary transition-colors"
-                aria-label="Cart"
-              >
-                <ShoppingCart className="w-5 h-5" />
-                {totalItems > 0 && (
-                  <motion.span
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    className="absolute -top-0.5 -right-0.5 w-5 h-5 rounded-full bg-primary text-white text-[10px] font-bold flex items-center justify-center"
-                  >
-                    {totalItems}
-                  </motion.span>
-                )}
-              </Link>
-            </motion.div>
             <Link
-              to="/shop"
+              to="/enquiry"
               className="px-6 py-2 rounded-lg bg-white text-black text-sm font-semibold hover:bg-white/90 transition-colors"
             >
-              Browse Catalog
+              Send Enquiry
             </Link>
           </div>
 
           <div className="md:hidden flex items-center gap-2">
-            <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
-              <Link
-                to="/cart"
-                className="relative p-2 text-foreground"
-                aria-label="Cart"
-              >
-                <ShoppingCart className="w-5 h-5" />
-                {totalItems > 0 && (
-                  <motion.span
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    className="absolute -top-0.5 -right-0.5 w-5 h-5 rounded-full bg-primary text-white text-[10px] font-bold flex items-center justify-center"
-                  >
-                    {totalItems}
-                  </motion.span>
-                )}
-              </Link>
-            </motion.div>
             <motion.button
               className="p-2 text-foreground"
               onClick={() => setMobileOpen(!mobileOpen)}
@@ -151,10 +112,10 @@ export function Navbar() {
                 </motion.div>
               ))}
               <Link
-                to="/shop"
+                to="/enquiry"
                 className="mt-2 w-full px-4 py-2.5 rounded-lg bg-white text-black text-sm font-semibold hover:bg-white/90 transition-colors"
               >
-                Browse Catalog
+                Send Enquiry
               </Link>
             </div>
           </motion.div>

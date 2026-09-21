@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
-import { ArrowLeft, CreditCard, Check } from 'lucide-react';
+import { ArrowLeft, Check } from 'lucide-react';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { Button } from '@/components/ui/button';
@@ -15,7 +15,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { useCart } from '@/context/CartContext';
 import { supabase } from '@/lib/supabaseClient';
 
@@ -46,20 +45,11 @@ const shippingOptions = [
   { value: 'pickup', label: 'Local Pickup', price: 0 },
 ];
 
-const paymentMethods = [
-  { value: 'credit-card', label: 'Credit Card' },
-  { value: 'paypal', label: 'PayPal' },
-  { value: 'google-pay', label: 'Google Pay' },
-  { value: 'apple-pay', label: 'Apple Pay' },
-  { value: 'bitcoin', label: 'Bitcoin' },
-];
-
 export function Checkout() {
   const navigate = useNavigate();
   const { items, subtotal, clearCart } = useCart();
   const [placing, setPlacing] = useState(false);
   const [shippingKey, setShippingKey] = useState(shippingOptions[0].value);
-  const [paymentMethod, setPaymentMethod] = useState('credit-card');
 
   const [form, setForm] = useState({
     firstName: '',
@@ -272,28 +262,6 @@ export function Checkout() {
                     />
                   </div>
                 </div>
-              </div>
-
-              {/* Payment method */}
-              <div className="glass-card rounded-2xl p-6">
-                <h2 className="font-heading font-semibold text-lg mb-4">Payment Method</h2>
-                <RadioGroup value={paymentMethod} onValueChange={setPaymentMethod} className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {paymentMethods.map((method) => (
-                    <label
-                      key={method.value}
-                      htmlFor={`pay-${method.value}`}
-                      className={`flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-colors ${
-                        paymentMethod === method.value
-                          ? 'border-primary/50 bg-primary/5'
-                          : 'border-[#1F1F2E] hover:border-[#2A2A3E]'
-                      }`}
-                    >
-                      <RadioGroupItem value={method.value} id={`pay-${method.value}`} />
-                      <span className="text-sm font-medium">{method.label}</span>
-                      {method.value === 'credit-card' && <CreditCard className="w-4 h-4 text-muted-foreground ml-auto" />}
-                    </label>
-                  ))}
-                </RadioGroup>
               </div>
             </div>
 

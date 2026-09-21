@@ -14,6 +14,7 @@ const AdminLogin = lazy(() => import('@/pages/AdminLogin').then((m) => ({ defaul
 const AdminDashboard = lazy(() => import('@/pages/AdminDashboard').then((m) => ({ default: m.AdminDashboard })));
 const Cart = lazy(() => import('@/pages/Cart').then((m) => ({ default: m.Cart })));
 const Checkout = lazy(() => import('@/pages/Checkout').then((m) => ({ default: m.Checkout })));
+const EnquiryForm = lazy(() => import('@/pages/EnquiryForm').then((m) => ({ default: m.EnquiryForm })));
 
 function PageLoader() {
   return (
@@ -85,6 +86,14 @@ function AnimatedRoutes() {
           element={
             <Suspense fallback={<PageLoader />}>
               <Checkout />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/enquiry"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <EnquiryForm />
             </Suspense>
           }
         />
