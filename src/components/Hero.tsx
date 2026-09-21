@@ -1,9 +1,11 @@
 import { motion } from 'framer-motion';
+import { Suspense } from 'react';
 import { ArrowRight, FileText, ShieldCheck, MapPin, Package } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useSiteSettings } from '@/hooks/useSiteSettings';
 import { MedicineAnimation } from '@/components/MedicineAnimation';
 import { Floating3DParticles } from '@/components/ui/floating-3d-particles';
+import { ErrorBoundary } from 'react-error-boundary';
 
 const trustIndicators = [
   { icon: ShieldCheck, label: 'Janoshik Verified' },
@@ -41,9 +43,13 @@ export function Hero() {
       {/* Medicine animation background */}
       <MedicineAnimation />
 
-      {/* Floating 3D particles */}
+      {/* Floating 3D particles with error handling */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-10">
-        <Floating3DParticles color="#8B5CF6" quantity={400} />
+        <Suspense fallback={null}>
+          <ErrorBoundary fallback={null}>
+            <Floating3DParticles color="#8B5CF6" quantity={150} />
+          </ErrorBoundary>
+        </Suspense>
       </div>
 
       {/* Dark overlay for text contrast */}
