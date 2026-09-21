@@ -108,7 +108,7 @@ export function Hero() {
               to="/shop"
               className="inline-flex items-center gap-2 px-8 py-4 rounded-lg bg-white text-black font-semibold hover:bg-white/90 transition-colors"
             >
-              SHOP ALL PRODUCTS
+              VIEW ALL PRODUCTS
               <ArrowRight className="w-4 h-4" />
             </Link>
             <Link
