@@ -30,12 +30,14 @@ function PageLoader() {
   );
 }
 
-function ErrorFallback({ error }: { error: Error }) {
+function ErrorFallback({ error }: { error: unknown }) {
+  const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+  
   return (
     <div className="min-h-screen bg-[#0A0A0F] flex items-center justify-center">
       <div className="text-center">
         <h1 className="text-2xl font-bold text-red-400 mb-4">Something went wrong</h1>
-        <p className="text-muted-foreground mb-4">{error.message}</p>
+        <p className="text-muted-foreground mb-4">{errorMessage}</p>
         <button
           onClick={() => window.location.reload()}
           className="px-4 py-2 rounded-lg bg-primary text-white"
