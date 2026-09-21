@@ -177,8 +177,11 @@ function App() {
       <AuthProvider>
         <CartProvider>
           <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+            <AgeVerification />
+            <GeoRestriction />
             <ScrollToTop />
             <AnimatedRoutes />
+            <CookieConsent />
           </BrowserRouter>
         </CartProvider>
       </AuthProvider>

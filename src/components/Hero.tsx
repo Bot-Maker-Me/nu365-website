@@ -2,6 +2,8 @@ import { motion } from 'framer-motion';
 import { ArrowRight, FileText, ShieldCheck, MapPin, Package } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useSiteSettings } from '@/hooks/useSiteSettings';
+import { MedicineAnimation } from '@/components/MedicineAnimation';
+import { Floating3DParticles } from '@/components/ui/floating-3d-particles';
 
 const trustIndicators = [
   { icon: ShieldCheck, label: 'Janoshik Verified' },
@@ -36,6 +38,14 @@ export function Hero() {
 
   return (
     <section className="relative h-screen min-h-[700px] overflow-hidden bg-[#050505] flex items-center">
+      {/* Medicine animation background */}
+      <MedicineAnimation />
+
+      {/* Floating 3D particles */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none z-10">
+        <Floating3DParticles color="#8B5CF6" quantity={400} />
+      </div>
+
       {/* Dark overlay for text contrast */}
       <div className="absolute inset-0 bg-black/60" />
 
@@ -89,10 +99,10 @@ export function Hero() {
             className="mt-10 flex flex-col sm:flex-row items-start gap-4"
           >
             <Link
-              to="/enquiry"
+              to="/shop"
               className="inline-flex items-center gap-2 px-8 py-4 rounded-lg bg-white text-black font-semibold hover:bg-white/90 transition-colors"
             >
-              SEND ENQUIRY
+              SHOP ALL PRODUCTS
               <ArrowRight className="w-4 h-4" />
             </Link>
             <Link
@@ -100,7 +110,7 @@ export function Hero() {
               className="inline-flex items-center gap-2 px-8 py-4 rounded-lg border border-white/20 text-white font-semibold hover:bg-white/10 transition-colors"
             >
               <FileText className="w-4 h-4" />
-              VIEW LAB REPORTS
+              SEND ENQUIRY
             </Link>
           </motion.div>
 
