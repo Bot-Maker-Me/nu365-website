@@ -9,6 +9,7 @@ import { AgeVerification } from '@/components/AgeVerification';
 import { GeoRestriction } from '@/components/GeoRestriction';
 import { CookieConsent } from '@/components/CookieConsent';
 import { LandingPage } from '@/pages/LandingPage';
+import { ErrorBoundary } from 'react-error-boundary';
 
 const ShopPage = lazy(() => import('@/pages/ShopPage').then((m) => ({ default: m.ShopPage })));
 const ProductDetailPage = lazy(() => import('@/pages/ProductDetailPage').then((m) => ({ default: m.ProductDetailPage })));
@@ -29,6 +30,23 @@ function PageLoader() {
   );
 }
 
+function ErrorFallback({ error }: { error: Error }) {
+  return (
+    <div className="min-h-screen bg-[#0A0A0F] flex items-center justify-center">
+      <div className="text-center">
+        <h1 className="text-2xl font-bold text-red-400 mb-4">Something went wrong</h1>
+        <p className="text-muted-foreground mb-4">{error.message}</p>
+        <button
+          onClick={() => window.location.reload()}
+          className="px-4 py-2 rounded-lg bg-primary text-white"
+        >
+          Reload Page
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function AnimatedRoutes() {
   const location = useLocation();
 
@@ -44,7 +62,9 @@ function AnimatedRoutes() {
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.25, ease: 'easeOut' }}
             >
-              <LandingPage />
+              <Suspense fallback={<PageLoader />}>
+                <LandingPage />
+              </Suspense>
             </motion.div>
           }
         />
@@ -151,17 +171,19 @@ function AnimatedRoutes() {
 
 function App() {
   return (
-    <AuthProvider>
-      <CartProvider>
-        <BrowserRouter>
-          <AgeVerification />
-          <GeoRestriction />
-          <ScrollToTop />
-          <AnimatedRoutes />
-          <CookieConsent />
-        </BrowserRouter>
-      </CartProvider>
-    </AuthProvider>
+    <ErrorBoundary FallbackComponent={ErrorFallback}>
+      <AuthProvider>
+        <CartProvider>
+          <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+            <AgeVerification />
+            <GeoRestriction />
+            <ScrollToTop />
+            <AnimatedRoutes />
+            <CookieConsent />
+          </BrowserRouter>
+        </CartProvider>
+      </AuthProvider>
+    </ErrorBoundary>
   );
 }
 
