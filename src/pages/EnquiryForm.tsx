@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
-import { Send, Mail, Phone, User, MessageSquare } from 'lucide-react';
+import { Send, Mail, Phone, User, MessageSquare, RefreshCw } from 'lucide-react';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { Button } from '@/components/ui/button';
@@ -20,8 +20,35 @@ export function EnquiryForm() {
     description: '',
   });
 
+  // CAPTCHA state
+  const [captcha, setCaptcha] = useState({ num1: 0, num2: 0, answer: 0 });
+  const [userCaptchaAnswer, setUserCaptchaAnswer] = useState('');
+  const [captchaError, setCaptchaError] = useState('');
+
+  // Generate new CAPTCHA
+  const generateCaptcha = () => {
+    const num1 = Math.floor(Math.random() * 10) + 1;
+    const num2 = Math.floor(Math.random() * 10) + 1;
+    setCaptcha({ num1, num2, answer: num1 + num2 });
+    setUserCaptchaAnswer('');
+    setCaptchaError('');
+  };
+
+  // Initialize CAPTCHA on mount
+  useEffect(() => {
+    generateCaptcha();
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Validate CAPTCHA
+    if (parseInt(userCaptchaAnswer) !== captcha.answer) {
+      setCaptchaError('Incorrect answer. Please try again.');
+      generateCaptcha();
+      return;
+    }
+
     setSubmitting(true);
 
     // Get the recipient email from site settings, fallback to a default
@@ -44,6 +71,7 @@ export function EnquiryForm() {
       toast.success(`Opening email client to send enquiry to ${recipientEmail}`);
       setForm({ name: '', mobile: '', email: '', description: '' });
       setSubmitting(false);
+      generateCaptcha(); // Generate new CAPTCHA for next submission
     }, 500);
   };
 
@@ -130,6 +158,35 @@ export function EnquiryForm() {
                   rows={6}
                   className="bg-secondary/20 border-[#1F1F2E] resize-none"
                 />
+              </div>
+
+              {/* CAPTCHA Section */}
+              <div className="space-y-2">
+                <Label className="flex items-center gap-2">
+                  <span className="bg-primary/20 text-primary px-2 py-1 rounded text-xs font-mono font-bold">
+                    {captcha.num1} + {captcha.num2} = ?
+                  </span>
+                  <span className="text-sm text-muted-foreground">Security Check</span>
+                  <button
+                    type="button"
+                    onClick={generateCaptcha}
+                    className="ml-auto text-muted-foreground hover:text-foreground transition-colors"
+                    title="Refresh CAPTCHA"
+                  >
+                    <RefreshCw className="w-4 h-4" />
+                  </button>
+                </Label>
+                <Input
+                  type="number"
+                  value={userCaptchaAnswer}
+                  onChange={(e) => setUserCaptchaAnswer(e.target.value)}
+                  placeholder="Enter the answer"
+                  required
+                  className="bg-secondary/20 border-[#1F1F2E]"
+                />
+                {captchaError && (
+                  <p className="text-sm text-red-400">{captchaError}</p>
+                )}
               </div>
 
               <Button
