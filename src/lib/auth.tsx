@@ -12,7 +12,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 // Hardcoded admin credentials (in production, use proper auth system)
 const ADMIN_CREDENTIALS = {
-  email: 'piush80545@gmail.com',
+  email: 'piyush80545@gmail.com',
   password: 'Piyush@112008'
 };
 
