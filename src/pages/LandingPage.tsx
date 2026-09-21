@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Microscope, ShieldCheck, Beaker, Atom, FlaskConical, FileCheck } from 'lucide-react';
+import { ArrowRight, Microscope, ShieldCheck, Beaker, Atom, FlaskConical, FileCheck, AlertTriangle } from 'lucide-react';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { Hero } from '@/components/Hero';
@@ -182,6 +182,44 @@ export function LandingPage() {
                 <span className="text-sm font-medium text-muted-foreground">{badge}</span>
               </motion.div>
             ))}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Compliance Disclaimer */}
+      <section className="relative py-12 border-t border-[#1F1F2E]">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="glass-card rounded-2xl p-8 border border-yellow-500/20"
+          >
+            <div className="flex items-start gap-4">
+              <div className="flex-shrink-0">
+                <div className="w-12 h-12 rounded-full bg-yellow-500/20 flex items-center justify-center">
+                  <AlertTriangle className="w-6 h-6 text-yellow-400" />
+                </div>
+              </div>
+              <div className="flex-1">
+                <h3 className="font-heading font-semibold text-lg mb-2 text-yellow-400">Important Legal Disclaimer</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  All products sold on this website are strictly for research purposes only. These products are not intended for human consumption, diagnostic use, or as therapeutic agents. By purchasing from this site, you acknowledge and agree that you are at least 18 years of age and will use these products solely for legitimate research purposes in compliance with all applicable local, state, and federal laws and regulations. The purchaser assumes all liability for the use or misuse of these products.
+                </p>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  <span className="px-3 py-1 rounded-full bg-yellow-500/10 text-yellow-400 text-xs font-medium border border-yellow-500/20">
+                    Research Use Only
+                  </span>
+                  <span className="px-3 py-1 rounded-full bg-yellow-500/10 text-yellow-400 text-xs font-medium border border-yellow-500/20">
+                    Not for Human Consumption
+                  </span>
+                  <span className="px-3 py-1 rounded-full bg-yellow-500/10 text-yellow-400 text-xs font-medium border border-yellow-500/20">
+                    18+ Only
+                  </span>
+                </div>
+              </div>
+            </div>
           </motion.div>
         </div>
       </section>

@@ -19,7 +19,7 @@ export function Footer() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="grid grid-cols-1 md:grid-cols-4 gap-10"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10"
         >
           <div className="md:col-span-2">
             <Logo className="mb-4" siteName={siteName} />
@@ -64,7 +64,7 @@ export function Footer() {
           >
             <h4 className="font-heading font-semibold text-sm mb-4">Navigation</h4>
             <ul className="space-y-2.5">
-              {['Home', 'Shop'].map((item, index) => (
+              {['Home', 'Enquiry'].map((item, index) => (
                 <motion.li
                   key={item}
                   initial={{ opacity: 0, x: -10 }}
@@ -73,7 +73,34 @@ export function Footer() {
                   transition={{ duration: 0.4, delay: 0.4 + index * 0.1 }}
                 >
                   <Link
-                    to={item === 'Home' ? '/' : '/shop'}
+                    to={item === 'Home' ? '/' : '/enquiry'}
+                    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    {item}
+                  </Link>
+                </motion.li>
+              ))}
+            </ul>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.35 }}
+          >
+            <h4 className="font-heading font-semibold text-sm mb-4">Legal</h4>
+            <ul className="space-y-2.5">
+              {['Privacy Policy', 'Terms of Service'].map((item, index) => (
+                <motion.li
+                  key={item}
+                  initial={{ opacity: 0, x: -10 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.4, delay: 0.45 + index * 0.1 }}
+                >
+                  <Link
+                    to={item === 'Privacy Policy' ? '/privacy-policy' : '/terms-of-service'}
                     className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                   >
                     {item}

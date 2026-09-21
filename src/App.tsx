@@ -5,6 +5,9 @@ import { AuthProvider } from '@/lib/auth';
 import { CartProvider } from '@/context/CartContext';
 import { ScrollToTop } from '@/components/ScrollToTop';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
+import { AgeVerification } from '@/components/AgeVerification';
+import { GeoRestriction } from '@/components/GeoRestriction';
+import { CookieConsent } from '@/components/CookieConsent';
 import { LandingPage } from '@/pages/LandingPage';
 
 const ShopPage = lazy(() => import('@/pages/ShopPage').then((m) => ({ default: m.ShopPage })));
@@ -15,6 +18,8 @@ const AdminDashboard = lazy(() => import('@/pages/AdminDashboard').then((m) => (
 const Cart = lazy(() => import('@/pages/Cart').then((m) => ({ default: m.Cart })));
 const Checkout = lazy(() => import('@/pages/Checkout').then((m) => ({ default: m.Checkout })));
 const EnquiryForm = lazy(() => import('@/pages/EnquiryForm').then((m) => ({ default: m.EnquiryForm })));
+const PrivacyPolicy = lazy(() => import('@/pages/PrivacyPolicy').then((m) => ({ default: m.PrivacyPolicy })));
+const TermsOfService = lazy(() => import('@/pages/TermsOfService').then((m) => ({ default: m.TermsOfService })));
 
 function PageLoader() {
   return (
@@ -98,6 +103,22 @@ function AnimatedRoutes() {
           }
         />
         <Route
+          path="/privacy-policy"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <PrivacyPolicy />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/terms-of-service"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <TermsOfService />
+            </Suspense>
+          }
+        />
+        <Route
           path="/login"
           element={
             <Suspense fallback={<PageLoader />}>
@@ -133,8 +154,11 @@ function App() {
     <AuthProvider>
       <CartProvider>
         <BrowserRouter>
+          <AgeVerification />
+          <GeoRestriction />
           <ScrollToTop />
           <AnimatedRoutes />
+          <CookieConsent />
         </BrowserRouter>
       </CartProvider>
     </AuthProvider>
