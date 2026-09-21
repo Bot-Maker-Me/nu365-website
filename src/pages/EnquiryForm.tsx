@@ -8,8 +8,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { useSiteSettings } from '@/hooks/useSiteSettings';
 
 export function EnquiryForm() {
+  const { settings } = useSiteSettings();
   const [submitting, setSubmitting] = useState(false);
   const [form, setForm] = useState({
     name: '',
@@ -22,13 +24,27 @@ export function EnquiryForm() {
     e.preventDefault();
     setSubmitting(true);
 
-    // Here you would typically send this data to your backend or email service
-    // For now, we'll simulate a successful submission
+    // Get the recipient email from site settings, fallback to a default
+    const recipientEmail = settings.email || 'info@nu365.com';
+
+    // Create mailto link with the enquiry details
+    const subject = encodeURIComponent(`New Enquiry from ${form.name}`);
+    const body = encodeURIComponent(
+      `Name: ${form.name}\n` +
+      `Mobile: ${form.mobile}\n` +
+      `Email: ${form.email}\n\n` +
+      `Enquiry:\n${form.description}`
+    );
+
+    // Open email client with pre-filled information
+    window.location.href = `mailto:${recipientEmail}?subject=${subject}&body=${body}`;
+
+    // Show success message and reset form
     setTimeout(() => {
-      toast.success('Enquiry submitted successfully! We will get back to you soon.');
+      toast.success(`Opening email client to send enquiry to ${recipientEmail}`);
       setForm({ name: '', mobile: '', email: '', description: '' });
       setSubmitting(false);
-    }, 1000);
+    }, 500);
   };
 
   return (
@@ -135,8 +151,8 @@ export function EnquiryForm() {
             <div className="mt-8 pt-6 border-t border-[#1F1F2E]">
               <p className="text-sm text-muted-foreground text-center">
                 Alternatively, you can contact us directly at{' '}
-                <a href="mailto:manager@example.com" className="text-primary hover:underline">
-                  manager@example.com
+                <a href={`mailto:${settings.email || 'info@nu365.com'}`} className="text-primary hover:underline">
+                  {settings.email || 'info@nu365.com'}
                 </a>
               </p>
             </div>
