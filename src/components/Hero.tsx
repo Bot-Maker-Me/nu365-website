@@ -39,7 +39,7 @@ export function Hero() {
   if (headlineLines.length === 0) headlineLines.push(headline);
 
   return (
-    <section className="relative h-screen min-h-[700px] overflow-hidden bg-[#050505] flex items-center">
+    <section className="relative h-screen min-h-[700px] overflow-hidden bg-[#050505] flex items-center pt-16 md:pt-0">
       {/* Medicine animation background */}
       <MedicineAnimation />
 

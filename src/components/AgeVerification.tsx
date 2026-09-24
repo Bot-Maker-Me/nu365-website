@@ -37,8 +37,8 @@ export function AgeVerification() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/90 backdrop-blur-sm p-4"
-          style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}
+          className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/90 backdrop-blur-sm p-4"
+          style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
         >
           <motion.div
             initial={{ scale: 0.9, opacity: 0 }}
@@ -46,6 +46,7 @@ export function AgeVerification() {
             exit={{ scale: 0.9, opacity: 0 }}
             transition={{ type: "spring", duration: 0.5 }}
             className="relative w-full max-w-md"
+            style={{ position: 'relative', margin: 'auto' }}
           >
             <div className="glass-card rounded-2xl p-8 border border-primary/20">
               <div className="text-center mb-6">
