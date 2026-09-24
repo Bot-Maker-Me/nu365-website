@@ -8,7 +8,7 @@ const DEFAULT_SETTINGS: SiteSettings = {
   hero_headline: 'Proof over promises.',
   hero_subheadline: 'Premium-grade research compounds. Independent lab testing with complete batch transparency.',
   bio: 'Premium research compounds for the modern laboratory. Advancing scientific discovery through precision chemistry.',
-  email: 'info@nu365.com',
+  email: 'hnayel@yahoo.com',
   address: 'Cambridge, MA',
   updated_at: '',
 };

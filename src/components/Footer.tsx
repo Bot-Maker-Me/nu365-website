@@ -7,7 +7,7 @@ import { useSiteSettings } from '@/hooks/useSiteSettings';
 export function Footer() {
   const { settings } = useSiteSettings();
   const siteName = settings.site_name ?? 'THE NU365';
-  const email = settings.email ?? 'info@nu365.com';
+  const email = settings.email ?? 'hnayel@yahoo.com';
   const address = settings.address ?? 'Cambridge, MA';
   const bio = settings.bio ?? 'Premium research compounds for the modern laboratory. Advancing scientific discovery through precision chemistry.';
 

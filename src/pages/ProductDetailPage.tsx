@@ -125,7 +125,7 @@ export function ProductDetailPage() {
 
   const inquirySubject = `Inquiry: ${product.name}`;
   const inquiryBody = `I'm interested in ${product.name} (${product.slug}).\n\nQuantity: ${quantity}\nPrice: $${Number(product.price).toFixed(2)}\n\nPlease provide more information.`;
-  const mailtoLink = `mailto:info@nu365.com?subject=${encodeURIComponent(inquirySubject)}&body=${encodeURIComponent(inquiryBody)}`;
+  const mailtoLink = `mailto:hnayel@yahoo.com?subject=${encodeURIComponent(inquirySubject)}&body=${encodeURIComponent(inquiryBody)}`;
 
   return (
     <AnimatePresence mode="wait">

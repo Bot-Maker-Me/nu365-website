@@ -52,7 +52,7 @@ export function EnquiryForm() {
     setSubmitting(true);
 
     // Get the recipient email from site settings, fallback to a default
-    const recipientEmail = settings.email || 'info@nu365.com';
+    const recipientEmail = settings.email || 'hnayel@yahoo.com';
 
     // Create mailto link with the enquiry details
     const subject = encodeURIComponent(`New Enquiry from ${form.name}`);
@@ -208,8 +208,8 @@ export function EnquiryForm() {
             <div className="mt-8 pt-6 border-t border-[#1F1F2E]">
               <p className="text-sm text-muted-foreground text-center">
                 Alternatively, you can contact us directly at{' '}
-                <a href={`mailto:${settings.email || 'info@nu365.com'}`} className="text-primary hover:underline">
-                  {settings.email || 'info@nu365.com'}
+                <a href={`mailto:${settings.email || 'hnayel@yahoo.com'}`} className="text-primary hover:underline">
+                  {settings.email || 'hnayel@yahoo.com'}
                 </a>
               </p>
             </div>

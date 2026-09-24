@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS site_settings (
   hero_headline text DEFAULT 'Proof over promises.',
   hero_subheadline text DEFAULT 'Premium-grade research compounds. Independent lab testing with complete batch transparency.',
   bio text DEFAULT 'Premium research compounds for the modern laboratory. Advancing scientific discovery through precision chemistry.',
-  email text DEFAULT 'info@nu365.com',
+  email text DEFAULT 'hnayel@yahoo.com',
   address text DEFAULT 'Cambridge, MA',
   updated_at timestamptz DEFAULT now(),
   CONSTRAINT site_settings_single_row CHECK (id = 1)

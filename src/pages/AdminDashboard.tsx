@@ -529,7 +529,7 @@ export function AdminDashboard() {
                       type="email"
                       value={settingsForm.email}
                       onChange={(e) => setSettingsForm({ ...settingsForm, email: e.target.value })}
-                      placeholder="info@nu365.com"
+                      placeholder="hnayel@yahoo.com"
                       className="bg-secondary/20 border-[#1F1F2E]"
                     />
                   </div>
