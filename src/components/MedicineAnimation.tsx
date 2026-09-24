@@ -101,7 +101,7 @@ export function MedicineAnimation() {
 
       {/* Floating vials/medicine bottles */}
       <motion.div
-        className="absolute top-20 right-20 w-32 h-48 opacity-20"
+        className="absolute top-20 right-20 w-16 h-24 opacity-20"
         animate={{
           y: [0, -20, 0],
           rotate: [0, 5, 0],
@@ -120,7 +120,7 @@ export function MedicineAnimation() {
       </motion.div>
 
       <motion.div
-        className="absolute bottom-32 left-16 w-24 h-36 opacity-15"
+        className="absolute bottom-32 left-16 w-12 h-18 opacity-15"
         animate={{
           y: [0, -15, 0],
           rotate: [0, -3, 0],
