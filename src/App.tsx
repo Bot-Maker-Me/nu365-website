@@ -2,7 +2,6 @@ import { lazy, Suspense, useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { AuthProvider } from '@/lib/auth';
-import { CartProvider } from '@/context/CartContext';
 import { ScrollToTop } from '@/components/ScrollToTop';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { CookieConsent } from '@/components/CookieConsent';
@@ -14,8 +13,6 @@ const ProductDetailPage = lazy(() => import('@/pages/ProductDetailPage').then((m
 const LoginPage = lazy(() => import('@/pages/LoginPage').then((m) => ({ default: m.LoginPage })));
 const AdminLogin = lazy(() => import('@/pages/AdminLogin').then((m) => ({ default: m.AdminLogin })));
 const AdminDashboard = lazy(() => import('@/pages/AdminDashboard').then((m) => ({ default: m.AdminDashboard })));
-const Cart = lazy(() => import('@/pages/Cart').then((m) => ({ default: m.Cart })));
-const Checkout = lazy(() => import('@/pages/Checkout').then((m) => ({ default: m.Checkout })));
 const EnquiryForm = lazy(() => import('@/pages/EnquiryForm').then((m) => ({ default: m.EnquiryForm })));
 const PrivacyPolicy = lazy(() => import('@/pages/PrivacyPolicy').then((m) => ({ default: m.PrivacyPolicy })));
 const TermsOfService = lazy(() => import('@/pages/TermsOfService').then((m) => ({ default: m.TermsOfService })));
@@ -96,22 +93,6 @@ function AnimatedRoutes() {
                 <ProductDetailPage />
               </Suspense>
             </motion.div>
-          }
-        />
-        <Route
-          path="/cart"
-          element={
-            <Suspense fallback={<PageLoader />}>
-              <Cart />
-            </Suspense>
-          }
-        />
-        <Route
-          path="/checkout"
-          element={
-            <Suspense fallback={<PageLoader />}>
-              <Checkout />
-            </Suspense>
           }
         />
         <Route
@@ -306,13 +287,11 @@ function App() {
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback}>
       <AuthProvider>
-        <CartProvider>
-          <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-            <ScrollToTop />
-            <AnimatedRoutes />
-            <CookieConsent />
-          </BrowserRouter>
-        </CartProvider>
+        <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+          <ScrollToTop />
+          <AnimatedRoutes />
+          <CookieConsent />
+        </BrowserRouter>
       </AuthProvider>
     </ErrorBoundary>
   );

@@ -2,11 +2,10 @@ import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
-import { ArrowLeft, Minus, Plus, Mail, ShoppingCart } from 'lucide-react';
+import { ArrowLeft, Mail } from 'lucide-react';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { AnimatedButton } from '@/components/AnimatedButton';
-import { useCart } from '@/context/CartContext';
 import { supabase, type Product } from '@/lib/supabaseClient';
 import {
   Dialog,
@@ -22,9 +21,7 @@ export function ProductDetailPage() {
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [quantity, setQuantity] = useState(1);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const { addToCart } = useCart();
 
   useEffect(() => {
     if (!slug) return;
@@ -124,7 +121,7 @@ export function ProductDetailPage() {
   }
 
   const inquirySubject = `Inquiry: ${product.name}`;
-  const inquiryBody = `I'm interested in ${product.name} (${product.slug}).\n\nQuantity: ${quantity}\nPrice: $${Number(product.price).toFixed(2)}\n\nPlease provide more information.`;
+  const inquiryBody = `I'm interested in ${product.name} (${product.slug}).\n\nPlease provide more information including pricing and availability.`;
   const mailtoLink = `mailto:hnayel@yahoo.com?subject=${encodeURIComponent(inquirySubject)}&body=${encodeURIComponent(inquiryBody)}`;
 
   return (
@@ -164,16 +161,15 @@ export function ProductDetailPage() {
               transition={{ duration: 0.5 }}
               className="relative"
             >
-              <div className="relative aspect-square rounded-2xl glass-card overflow-hidden group">
+              <div className="relative aspect-[4/5] rounded-2xl glass-card overflow-hidden group bg-white/5">
                 <img
                   src={product.image_url ?? `https://picsum.photos/seed/${product.slug}/800/800`}
                   alt={product.name}
                   loading="eager"
                   decoding="async"
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  className="w-full h-full object-contain p-8 transition-transform duration-500 group-hover:scale-105"
                   style={{ willChange: 'transform' }}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0F]/60 via-transparent to-transparent" />
               </div>
             </motion.div>
 
@@ -192,82 +188,17 @@ export function ProductDetailPage() {
                 {product.name}
               </h1>
 
-              <div className="mt-4 flex items-center gap-3">
-                {product.in_stock ? (
-                  <span className="flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold bg-green-500/10 text-green-400 border border-green-500/20">
-                    <span className="w-2 h-2 rounded-full bg-green-400 pulse-dot" />
-                    In Stock
-                  </span>
-                ) : (
-                  <span className="px-3 py-1.5 rounded-full text-xs font-semibold bg-red-500/10 text-red-400 border border-red-500/20">
-                    Out of Stock
-                  </span>
-                )}
-                <span className="text-sm text-muted-foreground">
-                  {product.quantity > 0 ? `${product.quantity} units available` : 'Currently unavailable'}
-                </span>
-              </div>
-
               <p className="mt-6 text-muted-foreground leading-relaxed text-base">
                 {product.description}
               </p>
 
-              <div className="mt-8 flex items-baseline gap-2">
-                <span className="text-4xl font-bold font-heading">
-                  ${Number(product.price).toFixed(2)}
-                </span>
-                <span className="text-sm text-muted-foreground">per unit</span>
-              </div>
-
-              {/* Quantity selector */}
+              {/* Inquire button */}
               <div className="mt-8">
-                <label className="text-sm font-medium text-foreground mb-3 block">Quantity</label>
-                <div className="flex items-center gap-3">
-                  <div className="flex items-center glass-card rounded-xl overflow-hidden">
-                    <button
-                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                      className="p-3 hover:bg-secondary/50 transition-colors"
-                      disabled={!product.in_stock}
-                    >
-                      <Minus className="w-4 h-4" />
-                    </button>
-                    <span className="w-16 text-center font-medium">{quantity}</span>
-                    <button
-                      onClick={() => setQuantity(Math.min(product.quantity, quantity + 1))}
-                      className="p-3 hover:bg-secondary/50 transition-colors"
-                      disabled={!product.in_stock}
-                    >
-                      <Plus className="w-4 h-4" />
-                    </button>
-                  </div>
-                  <span className="text-sm text-muted-foreground">
-                    Total: ${(Number(product.price) * quantity).toFixed(2)}
-                  </span>
-                </div>
-              </div>
-
-              {/* Add to cart + Inquire buttons */}
-              <div className="mt-8 flex flex-col sm:flex-row items-start gap-4">
-                <AnimatedButton
-                  size="lg"
-                  className="glow-hover"
-                  onClick={() => {
-                    if (product) {
-                      addToCart(product, quantity);
-                      toast.success(`Added ${quantity} × ${product.name} to cart`);
-                    }
-                  }}
-                >
-                  <ShoppingCart className="w-4 h-4" /> Add to Cart
-                </AnimatedButton>
-
                 <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
                   <DialogTrigger asChild>
-                    <div>
-                      <AnimatedButton size="lg" variant="outline" onClick={() => setDialogOpen(true)}>
-                        <Mail className="w-4 h-4" /> Inquire
-                      </AnimatedButton>
-                    </div>
+                    <AnimatedButton size="lg" className="gradient-bg text-white border-transparent glow-hover">
+                      <Mail className="w-4 h-4" /> Inquire
+                    </AnimatedButton>
                   </DialogTrigger>
                   <DialogContent className="glass border-[#1F1F2E] bg-[#12121A]">
                     <DialogHeader>
@@ -281,14 +212,6 @@ export function ProductDetailPage() {
                         <div className="flex justify-between text-sm">
                           <span className="text-muted-foreground">Product</span>
                           <span className="font-medium">{product.name}</span>
-                        </div>
-                        <div className="flex justify-between text-sm">
-                          <span className="text-muted-foreground">Quantity</span>
-                          <span className="font-medium">{quantity} units</span>
-                        </div>
-                        <div className="flex justify-between text-sm">
-                          <span className="text-muted-foreground">Estimated Total</span>
-                          <span className="font-medium">${(Number(product.price) * quantity).toFixed(2)}</span>
                         </div>
                       </div>
                       <a href={mailtoLink}>

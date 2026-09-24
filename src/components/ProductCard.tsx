@@ -22,16 +22,15 @@ export function ProductCard({ product, index = 0 }: Props) {
           <Link to={`/product/${product.slug}`} className="group block">
             <div className="glass-card rounded-2xl overflow-hidden h-full">
               <CardItem translateZ="20" className="w-full">
-                <div className="relative aspect-square overflow-hidden bg-secondary/30">
+                <div className="relative aspect-[4/5] overflow-hidden bg-white/5">
                   <img
                     src={product.image_url ?? `https://picsum.photos/seed/${product.slug}/600/600`}
                     alt={product.name}
                     loading="lazy"
                     decoding="async"
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    className="w-full h-full object-contain p-4 transition-transform duration-500 group-hover:scale-105"
                     style={{ willChange: 'transform' }}
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0F]/80 via-transparent to-transparent" />
                   {product.category && (
                     <div className="absolute top-3 left-3">
                       <span className="px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wider glass text-muted-foreground">
