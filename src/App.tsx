@@ -1,12 +1,10 @@
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { AuthProvider } from '@/lib/auth';
 import { CartProvider } from '@/context/CartContext';
 import { ScrollToTop } from '@/components/ScrollToTop';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
-import { AgeVerification } from '@/components/AgeVerification';
-import { GeoRestriction } from '@/components/GeoRestriction';
 import { CookieConsent } from '@/components/CookieConsent';
 import { LandingPage } from '@/pages/LandingPage';
 import { ErrorBoundary } from 'react-error-boundary';
@@ -172,13 +170,84 @@ function AnimatedRoutes() {
 }
 
 function App() {
+  const [isAgeVerified, setIsAgeVerified] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    const verified = localStorage.getItem('ageVerified');
+    setIsAgeVerified(!!verified);
+  }, []);
+
+  const handleAgeVerification = (isOver18: boolean) => {
+    if (isOver18) {
+      localStorage.setItem('ageVerified', 'true');
+      setIsAgeVerified(true);
+    } else {
+      window.location.href = 'https://www.google.com';
+    }
+  };
+
+  // Show age verification modal if not verified
+  if (isAgeVerified === false) {
+    return (
+      <div className="fixed inset-0 z-[999999] flex items-center justify-center bg-black/95 backdrop-blur-sm p-4">
+        <motion.div
+          initial={{ scale: 0.9, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ type: "spring", duration: 0.5 }}
+          className="relative w-full max-w-md"
+        >
+          <div className="glass-card rounded-2xl p-8 border border-primary/20">
+            <div className="text-center mb-6">
+              <div className="w-16 h-16 rounded-full gradient-bg flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+              </div>
+              <h2 className="text-2xl font-bold font-heading mb-2">Age Verification Required</h2>
+              <p className="text-muted-foreground">
+                You must be 18 years or older to access this website.
+              </p>
+            </div>
+
+            <div className="space-y-4">
+              <button
+                onClick={() => handleAgeVerification(true)}
+                className="w-full h-12 gradient-bg text-white border-transparent rounded-lg font-medium hover:opacity-90 transition-opacity"
+              >
+                I am 18 or older
+              </button>
+              <button
+                onClick={() => handleAgeVerification(false)}
+                className="w-full h-12 border border-[#1F1F2E] hover:bg-[#1F1F2E] rounded-lg font-medium transition-colors"
+              >
+                I am under 18
+              </button>
+            </div>
+
+            <p className="text-xs text-muted-foreground text-center mt-6">
+              By entering, you agree to our Terms of Service and Privacy Policy.
+            </p>
+          </div>
+        </motion.div>
+      </div>
+    );
+  }
+
+  // If not checked yet, show loading
+  if (isAgeVerified === null) {
+    return (
+      <div className="min-h-screen bg-[#0A0A0F] flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  // If verified, render the full app
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback}>
       <AuthProvider>
         <CartProvider>
           <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-            <AgeVerification />
-            {/* GeoRestriction disabled per user request */}
             <ScrollToTop />
             <AnimatedRoutes />
             <CookieConsent />
