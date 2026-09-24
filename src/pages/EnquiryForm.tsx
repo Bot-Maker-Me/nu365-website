@@ -77,7 +77,17 @@ export function EnquiryForm() {
       }
     } catch (error) {
       console.error('Error sending enquiry:', error);
-      toast.error('Failed to send enquiry. Please try again.');
+      // Fallback to mailto if API fails
+      const recipientEmail = settings.email || 'hnayel@yahoo.com';
+      const subject = encodeURIComponent(`New Enquiry from ${form.name}`);
+      const body = encodeURIComponent(
+        `Name: ${form.name}\n` +
+        `Mobile: ${form.mobile}\n` +
+        `Email: ${form.email}\n\n` +
+        `Enquiry:\n${form.description}`
+      );
+      window.location.href = `mailto:${recipientEmail}?subject=${subject}&body=${body}`;
+      toast.info('Opening email client as fallback...');
     } finally {
       setSubmitting(false);
     }
