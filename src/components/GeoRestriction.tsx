@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Globe, AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -10,6 +11,11 @@ export function GeoRestriction() {
   const [showModal, setShowModal] = useState(false);
   const [isAllowed, setIsAllowed] = useState(true);
   const [countryCode, setCountryCode] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     const checkLocation = async () => {
@@ -48,16 +54,16 @@ export function GeoRestriction() {
     setShowModal(false);
   };
 
-  if (isAllowed) return null;
+  if (!mounted || isAllowed) return null;
 
-  return (
+  const modalContent = (
     <AnimatePresence>
       {showModal && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[2147483647] flex items-center justify-center bg-black/90 backdrop-blur-sm p-4"
+          className="fixed inset-0 z-[2147483647] flex items-center justify-center bg-black/90 backdrop-blur-sm"
           style={{ 
             position: 'fixed', 
             top: 0, 
@@ -67,7 +73,6 @@ export function GeoRestriction() {
             display: 'flex', 
             alignItems: 'center', 
             justifyContent: 'center',
-            overflow: 'auto',
             padding: '20px'
           }}
         >
@@ -79,9 +84,7 @@ export function GeoRestriction() {
             className="relative w-full max-w-md"
             style={{ 
               position: 'relative', 
-              margin: 'auto',
-              maxHeight: '100vh',
-              overflow: 'auto'
+              margin: 'auto'
             }}
           >
             <div className="glass-card rounded-2xl p-8 border border-red-500/20">
@@ -119,4 +122,6 @@ export function GeoRestriction() {
       )}
     </AnimatePresence>
   );
+
+  return mounted ? createPortal(modalContent, document.body) : null;
 }

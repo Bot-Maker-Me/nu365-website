@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Shield } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -6,6 +7,11 @@ import { Button } from '@/components/ui/button';
 export function AgeVerification() {
   const [showModal, setShowModal] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     // Check if user has already verified age
@@ -28,16 +34,16 @@ export function AgeVerification() {
     }
   };
 
-  if (isVerified) return null;
+  if (!mounted || isVerified) return null;
 
-  return (
+  const modalContent = (
     <AnimatePresence>
       {showModal && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[2147483647] flex items-center justify-center bg-black/90 backdrop-blur-sm p-4"
+          className="fixed inset-0 z-[2147483647] flex items-center justify-center bg-black/90 backdrop-blur-sm"
           style={{ 
             position: 'fixed', 
             top: 0, 
@@ -47,7 +53,6 @@ export function AgeVerification() {
             display: 'flex', 
             alignItems: 'center', 
             justifyContent: 'center',
-            overflow: 'auto',
             padding: '20px'
           }}
         >
@@ -59,9 +64,7 @@ export function AgeVerification() {
             className="relative w-full max-w-md"
             style={{ 
               position: 'relative', 
-              margin: 'auto',
-              maxHeight: '100vh',
-              overflow: 'auto'
+              margin: 'auto'
             }}
           >
             <div className="glass-card rounded-2xl p-8 border border-primary/20">
@@ -100,4 +103,6 @@ export function AgeVerification() {
       )}
     </AnimatePresence>
   );
+
+  return mounted ? createPortal(modalContent, document.body) : null;
 }
