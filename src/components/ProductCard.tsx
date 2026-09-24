@@ -49,19 +49,9 @@ export function ProductCard({ product, index = 0 }: Props) {
                   </h3>
                 </CardItem>
                 <CardItem translateZ="5" className="w-full">
-                  <p className="text-sm text-muted-foreground line-clamp-2 mb-4 leading-relaxed">
+                  <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">
                     {product.description}
                   </p>
-                </CardItem>
-                <CardItem translateZ="15" className="w-full">
-                  <div className="flex items-center justify-between">
-                    <span className="text-lg font-bold font-heading">
-                      ${Number(product.price).toFixed(2)}
-                    </span>
-                    <span className="text-xs text-muted-foreground">
-                      {product.quantity > 0 ? `${product.quantity} available` : 'N/A'}
-                    </span>
-                  </div>
                 </CardItem>
               </div>
             </div>
