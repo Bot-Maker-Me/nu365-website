@@ -1,17 +1,11 @@
 import { motion } from 'framer-motion';
 import { Suspense } from 'react';
-import { ArrowRight, FileText, ShieldCheck, MapPin, Package } from 'lucide-react';
+import { ArrowRight, FileText } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useSiteSettings } from '@/hooks/useSiteSettings';
 import { MedicineAnimation } from '@/components/MedicineAnimation';
 import { Floating3DParticles } from '@/components/ui/floating-3d-particles';
 import { ErrorBoundary } from 'react-error-boundary';
-
-const trustIndicators = [
-  { icon: ShieldCheck, label: 'Janoshik Verified' },
-  { icon: MapPin, label: 'Ships from Canada' },
-  { icon: Package, label: 'No Customs Delays' },
-];
 
 const container = {
   hidden: {},
@@ -118,19 +112,6 @@ export function Hero() {
               <FileText className="w-4 h-4" />
               SEND ENQUIRY
             </Link>
-          </motion.div>
-
-          {/* Trust indicators */}
-          <motion.div
-            variants={fadeUp}
-            className="mt-12 flex flex-wrap items-center gap-x-8 gap-y-3"
-          >
-            {trustIndicators.map((item) => (
-              <div key={item.label} className="flex items-center gap-2.5">
-                <item.icon className="w-4 h-4 text-white/40" />
-                <span className="text-sm font-medium text-white/50">{item.label}</span>
-              </div>
-            ))}
           </motion.div>
         </motion.div>
       </div>
