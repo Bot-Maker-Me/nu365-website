@@ -189,12 +189,25 @@ function App() {
   // Show age verification modal if not verified
   if (isAgeVerified === false) {
     return (
-      <div className="fixed inset-0 z-[999999] flex items-center justify-center bg-black/95 backdrop-blur-sm p-4">
+      <div 
+        className="fixed inset-0 z-[999999] bg-black/95 backdrop-blur-sm p-4"
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0
+        }}
+      >
         <motion.div
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ type: "spring", duration: 0.5 }}
           className="relative w-full max-w-md"
+          style={{ margin: 'auto' }}
         >
           <div className="glass-card rounded-2xl p-8 border border-primary/20">
             <div className="text-center mb-6">
