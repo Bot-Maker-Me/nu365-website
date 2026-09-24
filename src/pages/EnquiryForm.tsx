@@ -51,28 +51,36 @@ export function EnquiryForm() {
 
     setSubmitting(true);
 
-    // Get the recipient email from site settings, fallback to a default
-    const recipientEmail = settings.email || 'hnayel@yahoo.com';
+    try {
+      // Send enquiry via API endpoint
+      const response = await fetch('/api/send-enquiry', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: form.name,
+          mobile: form.mobile,
+          email: form.email,
+          description: form.description,
+        }),
+      });
 
-    // Create mailto link with the enquiry details
-    const subject = encodeURIComponent(`New Enquiry from ${form.name}`);
-    const body = encodeURIComponent(
-      `Name: ${form.name}\n` +
-      `Mobile: ${form.mobile}\n` +
-      `Email: ${form.email}\n\n` +
-      `Enquiry:\n${form.description}`
-    );
+      const data = await response.json();
 
-    // Open email client with pre-filled information
-    window.location.href = `mailto:${recipientEmail}?subject=${subject}&body=${body}`;
-
-    // Show success message and reset form
-    setTimeout(() => {
-      toast.success(`Opening email client to send enquiry to ${recipientEmail}`);
-      setForm({ name: '', mobile: '', email: '', description: '' });
+      if (response.ok && data.success) {
+        toast.success('Your enquiry has been sent successfully! We\'ll get back to you soon.');
+        setForm({ name: '', mobile: '', email: '', description: '' });
+        generateCaptcha(); // Generate new CAPTCHA for next submission
+      } else {
+        toast.error(data.error || 'Failed to send enquiry. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error sending enquiry:', error);
+      toast.error('Failed to send enquiry. Please try again.');
+    } finally {
       setSubmitting(false);
-      generateCaptcha(); // Generate new CAPTCHA for next submission
-    }, 500);
+    }
   };
 
   return (
