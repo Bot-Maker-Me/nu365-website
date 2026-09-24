@@ -14,7 +14,7 @@ import {
 } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 
-type SortKey = 'name-asc' | 'name-desc' | 'price-asc' | 'price-desc';
+type SortKey = 'name-asc' | 'name-desc';
 
 const container = {
   hidden: { opacity: 0 },
@@ -89,12 +89,6 @@ export function ShopPage() {
       case 'name-desc':
         sorted.sort((a, b) => b.name.localeCompare(a.name));
         break;
-      case 'price-asc':
-        sorted.sort((a, b) => a.price - b.price);
-        break;
-      case 'price-desc':
-        sorted.sort((a, b) => b.price - a.price);
-        break;
     }
     return sorted;
   }, [products, debouncedSearch, category, sort]);
@@ -167,8 +161,6 @@ export function ShopPage() {
                 <SelectContent className="glass border-[#1F1F2E] bg-[#12121A]">
                   <SelectItem value="name-asc">Name: A to Z</SelectItem>
                   <SelectItem value="name-desc">Name: Z to A</SelectItem>
-                  <SelectItem value="price-asc">Price: Low to High</SelectItem>
-                  <SelectItem value="price-desc">Price: High to Low</SelectItem>
                 </SelectContent>
               </Select>
             </div>
