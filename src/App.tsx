@@ -198,11 +198,7 @@ function App() {
           bottom: 0,
           zIndex: 999999,
           backgroundColor: 'rgba(0, 0, 0, 0.95)',
-          backdropFilter: 'blur(8px)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          padding: '16px'
+          backdropFilter: 'blur(8px)'
         }}
       >
         <motion.div
@@ -210,10 +206,13 @@ function App() {
           animate={{ scale: 1, opacity: 1 }}
           transition={{ type: "spring", duration: 0.5 }}
           style={{
-            position: 'relative',
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
             width: '100%',
             maxWidth: '448px',
-            margin: 'auto'
+            padding: '16px'
           }}
         >
           <div style={{
