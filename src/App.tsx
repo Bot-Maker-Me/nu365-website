@@ -7,6 +7,7 @@ import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { CookieConsent } from '@/components/CookieConsent';
 import { LandingPage } from '@/pages/LandingPage';
 import { ErrorBoundary } from 'react-error-boundary';
+import { CartProvider } from '@/context/CartContext';
 
 const ShopPage = lazy(() => import('@/pages/ShopPage').then((m) => ({ default: m.ShopPage })));
 const ProductDetailPage = lazy(() => import('@/pages/ProductDetailPage').then((m) => ({ default: m.ProductDetailPage })));
@@ -287,11 +288,13 @@ function App() {
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback}>
       <AuthProvider>
-        <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-          <ScrollToTop />
-          <AnimatedRoutes />
-          <CookieConsent />
-        </BrowserRouter>
+        <CartProvider>
+          <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+            <ScrollToTop />
+            <AnimatedRoutes />
+            <CookieConsent />
+          </BrowserRouter>
+        </CartProvider>
       </AuthProvider>
     </ErrorBoundary>
   );
