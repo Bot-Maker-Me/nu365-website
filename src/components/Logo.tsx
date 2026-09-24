@@ -15,17 +15,11 @@ export function Logo({ className, siteName = 'THE NU365' }: Props) {
         <span className="absolute w-2.5 h-2.5 rounded-full bg-[#3B82F6] animate-ping opacity-40" />
       </span>
 
-      <span
-        className="font-heading font-bold text-lg uppercase tracking-tight logo-text"
-        style={{
-          background: 'linear-gradient(to bottom, #FFFFFF 0%, #A0A0A0 100%)',
-          WebkitBackgroundClip: 'text',
-          backgroundClip: 'text',
-          WebkitTextFillColor: 'transparent',
-        }}
-      >
-        {siteName}
-      </span>
+      <img 
+        src="/logo.png" 
+        alt={siteName}
+        className="h-8 w-auto"
+      />
     </Link>
   );
 }
