@@ -199,9 +199,12 @@ function App() {
           zIndex: 999999,
           backgroundColor: 'rgba(0, 0, 0, 0.95)',
           backdropFilter: 'blur(8px)',
-          display: 'grid',
-          placeItems: 'center',
-          padding: '16px'
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          minHeight: '100vh',
+          padding: '16px',
+          overflowY: 'auto'
         }}
       >
         <motion.div
@@ -210,7 +213,8 @@ function App() {
           transition={{ type: "spring", duration: 0.5 }}
           style={{
             width: '100%',
-            maxWidth: '448px'
+            maxWidth: '448px',
+            margin: 'auto'
           }}
         >
           <div style={{
