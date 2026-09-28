@@ -1,3 +1,5 @@
+import { Resend } from 'resend';
+
 export default async function handler(req, res) {
   // Set CORS headers
   res.setHeader('Access-Control-Allow-Credentials', true);
@@ -31,7 +33,7 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Invalid email address' });
     }
 
-    // Log the enquiry (in production, use an email service like Resend, SendGrid, etc.)
+    // Log the enquiry
     console.log('Enquiry received:', {
       name,
       mobile,
@@ -41,7 +43,6 @@ export default async function handler(req, res) {
     });
 
     // Send email using Resend
-    const Resend = require('resend');
     const resend = new Resend(process.env.RESEND_API_KEY);
     
     await resend.emails.send({

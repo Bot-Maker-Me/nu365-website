@@ -1,3 +1,5 @@
+import { Resend } from 'resend';
+
 export default async function handler(req, res) {
   // Set CORS headers
   res.setHeader('Access-Control-Allow-Credentials', true);
@@ -40,7 +42,6 @@ export default async function handler(req, res) {
     });
 
     // Send email using Resend
-    const Resend = require('resend');
     const resend = new Resend(process.env.RESEND_API_KEY);
     
     await resend.emails.send({
