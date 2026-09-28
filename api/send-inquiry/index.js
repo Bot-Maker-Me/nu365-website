@@ -18,25 +18,24 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { name, mobile, email, description } = req.body;
+    const { productName, userEmail, userMessage } = req.body;
 
     // Validate required fields
-    if (!name || !mobile || !email || !description) {
-      return res.status(400).json({ error: 'All fields are required' });
+    if (!productName || !userEmail) {
+      return res.status(400).json({ error: 'Product name and email are required' });
     }
 
     // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
+    if (!emailRegex.test(userEmail)) {
       return res.status(400).json({ error: 'Invalid email address' });
     }
 
-    // Log the enquiry (in production, use an email service like Resend, SendGrid, etc.)
-    console.log('Enquiry received:', {
-      name,
-      mobile,
-      email,
-      description,
+    // Log the inquiry
+    console.log('Product inquiry received:', {
+      productName,
+      userEmail,
+      userMessage,
       timestamp: new Date().toISOString(),
     });
 
@@ -47,26 +46,25 @@ export default async function handler(req, res) {
     await resend.emails.send({
       from: 'onboarding@resend.dev',
       to: 'piyush80545@gmail.com',
-      subject: `New Enquiry from ${name}`,
+      subject: `Product Inquiry: ${productName}`,
       html: `
-        <h2>New Enquiry from Website</h2>
-        <p><strong>Name:</strong> ${name}</p>
-        <p><strong>Mobile:</strong> ${mobile}</p>
-        <p><strong>Email:</strong> ${email}</p>
-        <p><strong>Enquiry:</strong></p>
-        <p>${description}</p>
+        <h2>Product Inquiry from Website</h2>
+        <p><strong>Product:</strong> ${productName}</p>
+        <p><strong>Customer Email:</strong> ${userEmail}</p>
+        ${userMessage ? `<p><strong>Message:</strong></p><p>${userMessage}</p>` : ''}
+        <p><em>Please provide pricing and availability information for this product.</em></p>
       `,
     });
 
     return res.status(200).json({ 
       success: true, 
-      message: 'Enquiry sent successfully' 
+      message: 'Inquiry sent successfully' 
     });
 
   } catch (error) {
-    console.error('Error sending enquiry:', error);
+    console.error('Error sending inquiry:', error);
     return res.status(500).json({ 
-      error: 'Failed to send enquiry' 
+      error: 'Failed to send inquiry' 
     });
   }
 }

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
-import { ArrowLeft, Mail } from 'lucide-react';
+import { ArrowLeft, Mail, Send } from 'lucide-react';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { AnimatedButton } from '@/components/AnimatedButton';
@@ -15,6 +15,9 @@ import {
   DialogDescription,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 
 export function ProductDetailPage() {
   const { slug } = useParams<{ slug: string }>();
@@ -22,6 +25,11 @@ export function ProductDetailPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [inquiryForm, setInquiryForm] = useState({
+    email: '',
+    message: '',
+  });
 
   useEffect(() => {
     if (!slug) return;
@@ -120,9 +128,45 @@ export function ProductDetailPage() {
     );
   }
 
-  const inquirySubject = `Inquiry: ${product.name}`;
-  const inquiryBody = `I'm interested in ${product.name} (${product.slug}).\n\nPlease provide more information including pricing and availability.`;
-  const mailtoLink = `mailto:hnayel@yahoo.com?subject=${encodeURIComponent(inquirySubject)}&body=${encodeURIComponent(inquiryBody)}`;
+  const handleInquirySubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!inquiryForm.email) {
+      toast.error('Please enter your email address');
+      return;
+    }
+
+    setSubmitting(true);
+
+    try {
+      const response = await fetch('/api/send-inquiry', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          productName: product.name,
+          userEmail: inquiryForm.email,
+          userMessage: inquiryForm.message,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        toast.success('Inquiry sent successfully! We\'ll get back to you soon.');
+        setDialogOpen(false);
+        setInquiryForm({ email: '', message: '' });
+      } else {
+        toast.error(data.error || 'Failed to send inquiry. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error sending inquiry:', error);
+      toast.error('Failed to send inquiry. Please try again.');
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   return (
     <AnimatePresence mode="wait">
@@ -204,22 +248,54 @@ export function ProductDetailPage() {
                     <DialogHeader>
                       <DialogTitle className="font-heading">Inquire: {product.name}</DialogTitle>
                       <DialogDescription>
-                        Send us an email and our team will get back to you within 24 hours with pricing and availability details.
+                        Send us an inquiry and our team will get back to you within 24 hours with pricing and availability details.
                       </DialogDescription>
                     </DialogHeader>
-                    <div className="mt-4 space-y-4">
+                    <form onSubmit={handleInquirySubmit} className="mt-4 space-y-4">
                       <div className="glass-card rounded-xl p-4 space-y-2">
                         <div className="flex justify-between text-sm">
                           <span className="text-muted-foreground">Product</span>
                           <span className="font-medium">{product.name}</span>
                         </div>
                       </div>
-                      <a href={mailtoLink}>
-                        <AnimatedButton size="lg" className="w-full">
-                          <Mail className="w-4 h-4" /> Send Inquiry Email
-                        </AnimatedButton>
-                      </a>
-                    </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="email">Your Email</Label>
+                        <Input
+                          id="email"
+                          type="email"
+                          required
+                          value={inquiryForm.email}
+                          onChange={(e) => setInquiryForm({ ...inquiryForm, email: e.target.value })}
+                          placeholder="your.email@example.com"
+                          className="bg-secondary/20 border-[#1F1F2E]"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="message">Message (Optional)</Label>
+                        <Textarea
+                          id="message"
+                          value={inquiryForm.message}
+                          onChange={(e) => setInquiryForm({ ...inquiryForm, message: e.target.value })}
+                          placeholder="Any specific questions about this product?"
+                          rows={3}
+                          className="bg-secondary/20 border-[#1F1F2E] resize-none"
+                        />
+                      </div>
+                      <AnimatedButton 
+                        type="submit" 
+                        size="lg" 
+                        className="w-full"
+                        disabled={submitting}
+                      >
+                        {submitting ? (
+                          'Sending...'
+                        ) : (
+                          <>
+                            <Send className="w-4 h-4" /> Send Inquiry
+                          </>
+                        )}
+                      </AnimatedButton>
+                    </form>
                   </DialogContent>
                 </Dialog>
               </div>
