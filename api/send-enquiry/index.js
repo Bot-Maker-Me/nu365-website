@@ -42,30 +42,54 @@ export default async function handler(req, res) {
       timestamp: new Date().toISOString(),
     });
 
-    // Send email using Resend
-    const resend = new Resend(process.env.RESEND_API_KEY);
-    
-    await resend.emails.send({
-      from: 'onboarding@resend.dev',
-      to: 'piyush80545@gmail.com',
-      subject: `New Enquiry from ${name}`,
-      html: `
-        <h2>New Enquiry from Website</h2>
-        <p><strong>Name:</strong> ${name}</p>
-        <p><strong>Mobile:</strong> ${mobile}</p>
-        <p><strong>Email:</strong> ${email}</p>
-        <p><strong>Enquiry:</strong></p>
-        <p>${description}</p>
-      `,
-    });
+    // Get multiple API keys (comma-separated or single)
+    const apiKeys = process.env.RESEND_API_KEYS 
+      ? process.env.RESEND_API_KEYS.split(',').map(key => key.trim())
+      : [process.env.RESEND_API_KEY];
 
-    return res.status(200).json({ 
-      success: true, 
-      message: 'Enquiry sent successfully' 
+    const recipientEmail = process.env.RECIPIENT_EMAIL || 'piyush80545@gmail.com';
+
+    // Try each API key until one works
+    let lastError = null;
+    for (const apiKey of apiKeys) {
+      if (!apiKey) continue;
+      
+      try {
+        const resend = new Resend(apiKey);
+        
+        await resend.emails.send({
+          from: 'onboarding@resend.dev',
+          to: recipientEmail,
+          subject: `New Enquiry from ${name}`,
+          html: `
+            <h2>New Enquiry from Website</h2>
+            <p><strong>Name:</strong> ${name}</p>
+            <p><strong>Mobile:</strong> ${mobile}</p>
+            <p><strong>Email:</strong> ${email}</p>
+            <p><strong>Enquiry:</strong></p>
+            <p>${description}</p>
+          `,
+        });
+
+        return res.status(200).json({ 
+          success: true, 
+          message: 'Enquiry sent successfully' 
+        });
+      } catch (error) {
+        console.error(`Failed with API key: ${apiKey.substring(0, 10)}...`, error.message);
+        lastError = error;
+        // Continue to next API key
+      }
+    }
+
+    // If all API keys failed
+    console.error('All API keys failed, last error:', lastError);
+    return res.status(500).json({ 
+      error: 'Failed to send enquiry - all API keys exhausted or invalid' 
     });
 
   } catch (error) {
-    console.error('Error sending enquiry:', error);
+    console.error('Error in enquiry handler:', error);
     return res.status(500).json({ 
       error: 'Failed to send enquiry' 
     });
