@@ -47,7 +47,7 @@ export default async function handler(req, res) {
       ? process.env.RESEND_API_KEYS.split(',').map(key => key.trim())
       : [process.env.RESEND_API_KEY];
 
-    const recipientEmail = process.env.RECIPIENT_EMAIL || 'piyush80545@gmail.com';
+    const recipientEmail = process.env.RECIPIENT_EMAIL || 'hnayel@yahoo.com';
 
     // Try each API key until one works
     let lastError = null;
