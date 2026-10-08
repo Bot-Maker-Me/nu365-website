@@ -5,6 +5,7 @@ import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { ProductCard } from '@/components/ProductCard';
 import { supabase, type Product } from '@/lib/supabaseClient';
+import { mergeProductCatalog } from '@/lib/productCatalog';
 import {
   Select,
   SelectContent,
@@ -52,9 +53,10 @@ export function ShopPage() {
       .order('created_at', { ascending: false })
       .then(({ data, error: fetchError }) => {
         if (fetchError) {
-          setError(fetchError.message);
-        } else if (data) {
-          setProducts(data);
+          setProducts(mergeProductCatalog([]));
+          setError(null);
+        } else {
+          setProducts(mergeProductCatalog(data ?? []));
         }
         setLoading(false);
       });

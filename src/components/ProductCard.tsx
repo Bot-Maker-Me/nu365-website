@@ -53,18 +53,6 @@ export function ProductCard({ product, index = 0 }: Props) {
                     {product.description}
                   </p>
                 </CardItem>
-                <CardItem translateZ="5" className="w-full mt-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-lg font-bold gradient-text">
-                      ${product.price.toFixed(2)}
-                    </span>
-                    {product.in_stock ? (
-                      <span className="text-xs text-green-400 font-medium">In Stock</span>
-                    ) : (
-                      <span className="text-xs text-red-400 font-medium">Out of Stock</span>
-                    )}
-                  </div>
-                </CardItem>
               </div>
             </div>
           </Link>

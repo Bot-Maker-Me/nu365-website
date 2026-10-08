@@ -1,6 +1,4 @@
--- Temporarily disable RLS on the products table
--- Run this in your Supabase SQL Editor
--- Then run the replace-products.sql script
--- Then run the enable-rls.sql script to re-enable security
+-- Disable RLS temporarily to ensure products can be accessed
+-- Run this in your Supabase SQL editor: https://supabase.com/dashboard/project/hrahcesdeomfjjyevqyr/sql
 
 ALTER TABLE products DISABLE ROW LEVEL SECURITY;

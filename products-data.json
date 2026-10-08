@@ -77,11 +77,11 @@
     "category": "Research Compounds"
   },
   {
-    "name": "GHK-Cu",
+    "name": "GHK-CU",
     "strength": "100MG",
     "slug": "ghk-cu-100mg",
-    "image_url": "/products/GHK-Cu_100MG_v4_matte-silver-reflection.png",
-    "description": "High-quality GHK-Cu 100MG for research purposes only.",
+    "image_url": "/products/GHK-CU_100MG_matte-silver-reflection.png",
+    "description": "High-quality GHK-CU 100MG for research purposes only.",
     "price": 0,
     "quantity": 10,
     "in_stock": true,
@@ -263,7 +263,6 @@
     "in_stock": true,
     "category": "Research Compounds"
   },
-
   {
     "name": "RETATRUTIDE",
     "strength": "20MG",
@@ -308,7 +307,17 @@
     "in_stock": true,
     "category": "Research Compounds"
   },
-
+  {
+    "name": "SLU-PP-322",
+    "strength": "Research Only",
+    "slug": "slu-pp-322-research-only",
+    "image_url": "/products/SLU-PP-322_research-only_matte-silver-reflection.png",
+    "description": "High-quality SLU-PP-322 for research purposes only.",
+    "price": 0,
+    "quantity": 10,
+    "in_stock": true,
+    "category": "Research Compounds"
+  },
   {
     "name": "SS-31",
     "strength": "50MG",

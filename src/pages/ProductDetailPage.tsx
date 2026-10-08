@@ -7,6 +7,7 @@ import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { AnimatedButton } from '@/components/AnimatedButton';
 import { supabase, type Product } from '@/lib/supabaseClient';
+import { findCatalogProduct } from '@/lib/productCatalog';
 import {
   Dialog,
   DialogContent,
@@ -41,11 +42,13 @@ export function ProductDetailPage() {
       .eq('slug', slug)
       .maybeSingle()
       .then(({ data, error: fetchError }) => {
-        if (fetchError) {
-          setError(fetchError.message);
+        const resolved = findCatalogProduct(slug, data ?? null);
+        if (!resolved) {
+          setError(fetchError?.message ?? 'Product not found');
           setProduct(null);
         } else {
-          setProduct(data);
+          setProduct(resolved);
+          setError(null);
         }
         setLoading(false);
       });

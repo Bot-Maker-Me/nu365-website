@@ -11,6 +11,7 @@ import { ProductCard } from '@/components/ProductCard';
 import { ScrollVelocityContainer, ScrollVelocityRow } from '@/components/ui/scroll-based-velocity';
 import { BlurFade } from '@/components/ui/blur-fade';
 import { supabase, type Product } from '@/lib/supabaseClient';
+import { mergeProductCatalog } from '@/lib/productCatalog';
 
 const features = [
   { icon: Microscope, title: 'Precision Synthesized', desc: 'Every compound is synthesized to >99% purity using validated protocols.' },
@@ -37,10 +38,9 @@ export function LandingPage() {
     supabase
       .from('products')
       .select('*')
-      .order('created_at', { ascending: false })
-      .limit(6)
+      .order('name', { ascending: true })
       .then(({ data }) => {
-        if (data) setProducts(data);
+        setProducts(mergeProductCatalog(data ?? []).slice(0, 6));
         setProductsLoading(false);
       });
   }, []);

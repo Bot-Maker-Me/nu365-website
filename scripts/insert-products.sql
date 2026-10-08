@@ -1,17 +1,27 @@
--- Insert all 32 products into the products table
--- Run this in your Supabase SQL Editor
--- This will update existing products if they already exist (ON CONFLICT)
+-- Unique vial-label products only (skips v2/v3/v4 label variants)
+-- Run in Supabase SQL editor if needed: https://supabase.com/dashboard/project/hrahcesdeomfjjyevqyr/sql
+
+GRANT USAGE ON SCHEMA public TO anon, authenticated, service_role;
+GRANT SELECT ON TABLE products TO anon, authenticated, service_role;
+GRANT ALL ON TABLE products TO postgres, service_role;
+
+ALTER TABLE products DISABLE ROW LEVEL SECURITY;
+
+DELETE FROM products
+WHERE slug ~* '(^|-)v[2-9](-|$)'
+   OR name ~* '\mv[2-9]\M'
+   OR COALESCE(image_url, '') ~* '_v[0-9]+_';
 
 INSERT INTO products (name, slug, description, price, quantity, in_stock, image_url, category) VALUES
-('5-AMINO-1MQ 5MG', '5-amino-1mq-5mg', 'High-quality 5-AMINO-1MQ 5MG for research purposes only.', 50, 10, true, '/products/5-AMINO-1MQ_5MG_matte-silver-reflection.png', 'Research Compounds'),
+('5-AMINO-1MQ 5MG', '5-amino-1mq-5mg', 'High-quality 5-AMINO-1MQ 5MG for research purposes only.', 60, 10, true, '/products/5-AMINO-1MQ_5MG_matte-silver-reflection.png', 'Research Compounds'),
 ('AICAR 50MG', 'aicar-50mg', 'High-quality AICAR 50MG for research purposes only.', 90, 10, true, '/products/AICAR_50MG_matte-silver-reflection.png', 'Research Compounds'),
 ('BPC-157 10MG', 'bpc-157-10mg', 'High-quality BPC-157 10MG for research purposes only.', 50, 10, true, '/products/BPC-157_10MG_matte-silver-reflection.png', 'Research Compounds'),
 ('CJC-1295 10MG', 'cjc-1295-10mg', 'High-quality CJC-1295 10MG for research purposes only.', 50, 10, true, '/products/CJC-1295_10MG_matte-silver-reflection.png', 'Research Compounds'),
 ('CJC-1295 WITH DAC 5MG', 'cjc-1295-with-dac-5mg', 'High-quality CJC-1295 WITH DAC 5MG for research purposes only.', 60, 10, true, '/products/CJC-1295_WITH_DAC_5MG_matte-silver-reflection.png', 'Research Compounds'),
 ('CJC WITHOUT DAC IPAMORELIN 10MG', 'cjc-without-dac-ipamorelin-10mg', 'High-quality CJC WITHOUT DAC IPAMORELIN 10MG for research purposes only.', 50, 10, true, '/products/CJC_WITHOUT_DAC_IPAMORELIN_10MG_matte-silver-reflection.png', 'Research Compounds'),
 ('EPITALON 50MG', 'epitalon-50mg', 'High-quality EPITALON 50MG for research purposes only.', 90, 10, true, '/products/EPITALON_50MG_matte-silver-reflection.png', 'Research Compounds'),
-('GHK-Cu 100MG', 'ghk-cu-100mg', 'High-quality GHK-Cu 100MG for research purposes only.', 120, 10, true, '/products/GHK-Cu_100MG_v4_matte-silver-reflection.png', 'Research Compounds'),
-('GLOW BLEND BPC GHK TB 70MG', 'glow-blend-bpc-ghk-tb-70mg', 'High-quality GLOW BLEND BPC GHK TB 70MG for research purposes only.', 70, 10, true, '/products/GLOW_BLEND_BPC_GHK_TB_70MG_matte-silver-reflection.png', 'Research Compounds'),
+('GHK-Cu 100MG', 'ghk-cu-100mg', 'High-quality GHK-Cu 100MG for research purposes only.', 120, 10, true, '/products/GHK-CU_100MG_matte-silver-reflection.png', 'Research Compounds'),
+('GLOW BLEND BPC GHK TB 70MG', 'glow-blend-bpc-ghk-tb-70mg', 'High-quality GLOW BLEND BPC GHK TB 70MG for research purposes only.', 90, 10, true, '/products/GLOW_BLEND_BPC_GHK_TB_70MG_matte-silver-reflection.png', 'Research Compounds'),
 ('GLUTATHIONE 1500', 'glutathione-1500', 'High-quality GLUTATHIONE 1500 for research purposes only.', 150, 10, true, '/products/GLUTATHIONE_1500_matte-silver-reflection.png', 'Research Compounds'),
 ('HCG 10000IU', 'hcg-10000iu', 'High-quality HCG 10000IU for research purposes only.', 150, 10, true, '/products/HCG_10000IU_matte-silver-reflection.png', 'Research Compounds'),
 ('HEALING BLEND BPC-157 TB-500 20MG', 'healing-blend-bpc-157-tb-500-20mg', 'High-quality HEALING BLEND BPC-157 TB-500 20MG for research purposes only.', 70, 10, true, '/products/HEALING_BLEND_BPC-157_TB-500_20MG_matte-silver-reflection.png', 'Research Compounds'),
@@ -23,7 +33,7 @@ INSERT INTO products (name, slug, description, price, quantity, in_stock, image_
 ('KPV 10MG', 'kpv-10mg', 'High-quality KPV 10MG for research purposes only.', 50, 10, true, '/products/KPV_10MG_matte-silver-reflection.png', 'Research Compounds'),
 ('MELANOTAN-2 10MG', 'melanotan-2-10mg', 'High-quality MELANOTAN-2 10MG for research purposes only.', 50, 10, true, '/products/MELANOTAN-2_10MG_matte-silver-reflection.png', 'Research Compounds'),
 ('MGF 2MG', 'mgf-2mg', 'High-quality MGF 2MG for research purposes only.', 80, 10, true, '/products/MGF_2MG_matte-silver-reflection.png', 'Research Compounds'),
-('MOTS-C 40MG', 'mots-c-40mg', 'High-quality MOTS-C 40MG for research purposes only.', 90, 10, true, '/products/MOTS-C_40MG_matte-silver-reflection.png', 'Research Compounds'),
+('MOTS-C 40MG', 'mots-c-40mg', 'High-quality MOTS-C 40MG for research purposes only.', 70, 10, true, '/products/MOTS-C_40MG_matte-silver-reflection.png', 'Research Compounds'),
 ('PEG-MGF 2MG', 'peg-mgf-2mg', 'High-quality PEG-MGF 2MG for research purposes only.', 80, 10, true, '/products/PEG-MGF_2MG_matte-silver-reflection.png', 'Research Compounds'),
 ('PINEALON 20MG', 'pinealon-20mg', 'High-quality PINEALON 20MG for research purposes only.', 70, 10, true, '/products/PINEALON_20MG_matte-silver-reflection.png', 'Research Compounds'),
 ('PT-141 10MG', 'pt-141-10mg', 'High-quality PT-141 10MG for research purposes only.', 50, 10, true, '/products/PT-141_10MG_matte-silver-reflection.png', 'Research Compounds'),
@@ -31,6 +41,7 @@ INSERT INTO products (name, slug, description, price, quantity, in_stock, image_
 ('SELANK 11MG', 'selank-11mg', 'High-quality SELANK 11MG for research purposes only.', 50, 10, true, '/products/SELANK_11MG_matte-silver-reflection.png', 'Research Compounds'),
 ('SEMAX 11MG', 'semax-11mg', 'High-quality SEMAX 11MG for research purposes only.', 50, 10, true, '/products/SEMAX_11MG_matte-silver-reflection.png', 'Research Compounds'),
 ('SERMORELIN 5MG', 'sermorelin-5mg', 'High-quality SERMORELIN 5MG for research purposes only.', 60, 10, true, '/products/SERMORELIN_5MG_matte-silver-reflection.png', 'Research Compounds'),
+('SLU-PP-322 Research Only', 'slu-pp-322-research-only', 'High-quality SLU-PP-322 for research purposes only.', 75, 10, true, '/products/SLU-PP-322_research-only_matte-silver-reflection.png', 'Research Compounds'),
 ('SS-31 50MG', 'ss-31-50mg', 'High-quality SS-31 50MG for research purposes only.', 90, 10, true, '/products/SS-31_50MG_matte-silver-reflection.png', 'Research Compounds'),
 ('TB-500 10MG', 'tb-500-10mg', 'High-quality TB-500 10MG for research purposes only.', 50, 10, true, '/products/TB-500_10MG_matte-silver-reflection.png', 'Research Compounds'),
 ('TESAMORELIN 10MG', 'tesamorelin-10mg', 'High-quality TESAMORELIN 10MG for research purposes only.', 50, 10, true, '/products/TESAMORELIN_10MG_matte-silver-reflection.png', 'Research Compounds'),
@@ -38,8 +49,12 @@ INSERT INTO products (name, slug, description, price, quantity, in_stock, image_
 ON CONFLICT (slug) DO UPDATE SET
   name = EXCLUDED.name,
   description = EXCLUDED.description,
-  price = EXCLUDED.price,
-  quantity = EXCLUDED.quantity,
-  in_stock = EXCLUDED.in_stock,
   image_url = EXCLUDED.image_url,
-  category = EXCLUDED.category;
+  category = EXCLUDED.category,
+  in_stock = EXCLUDED.in_stock;
+
+DROP POLICY IF EXISTS "public_select_products" ON products;
+CREATE POLICY "public_select_products" ON products
+  FOR SELECT TO anon, authenticated USING (true);
+
+ALTER TABLE products ENABLE ROW LEVEL SECURITY;
