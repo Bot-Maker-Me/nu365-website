@@ -16,6 +16,7 @@ export function ProductCard({ product, index = 0 }: Props) {
       viewport={{ once: true, margin: '-50px' }}
       transition={{ duration: 0.4, delay: (index % 3) * 0.08, ease: [0.22, 1, 0.36, 1] }}
       style={{ willChange: 'transform' }}
+      className="w-[60%] md:w-[65%] mx-auto"
     >
       <CardContainer className="w-full" containerClassName="py-0">
         <CardBody className="w-full h-auto [&>*]:[transform-style:preserve-3d]">
@@ -51,6 +52,18 @@ export function ProductCard({ product, index = 0 }: Props) {
                   <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">
                     {product.description}
                   </p>
+                </CardItem>
+                <CardItem translateZ="5" className="w-full mt-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-lg font-bold gradient-text">
+                      ${product.price.toFixed(2)}
+                    </span>
+                    {product.in_stock ? (
+                      <span className="text-xs text-green-400 font-medium">In Stock</span>
+                    ) : (
+                      <span className="text-xs text-red-400 font-medium">Out of Stock</span>
+                    )}
+                  </div>
                 </CardItem>
               </div>
             </div>
