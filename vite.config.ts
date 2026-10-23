@@ -1,9 +1,10 @@
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 import path from 'node:path';
+import dyadComponentTagger from '@dyad-sh/react-vite-component-tagger';
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [dyadComponentTagger(), react()],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
