@@ -3,10 +3,10 @@ import {
   AlertTriangle, ArrowRight, Atom, Beaker, FileCheck, FlaskConical, Microscope, ShieldCheck,
 } from 'lucide-react';
 import { Hero } from '@/components/Hero';
+import { Marquee } from '@/components/Marquee';
 import { ProductGrid } from '@/components/ProductGrid';
 import { SectionHeading } from '@/components/SectionHeading';
 import { BlurFade } from '@/components/ui/blur-fade';
-import { ScrollVelocityContainer, ScrollVelocityRow } from '@/components/ui/scroll-based-velocity';
 import { useProducts } from '@/lib/products';
 
 const FEATURED_COUNT = 6;
@@ -43,22 +43,16 @@ export default function LandingPage() {
 
       {/* Scrolling banner */}
       <BlurFade inView>
-        <ScrollVelocityContainer>
-          <ScrollVelocityRow
-            baseVelocity={2}
-            direction={1}
-            className="border-y border-[#1F1F2E]/50 bg-gradient-to-r from-[#0A0A0F] via-[#12121A] to-[#0A0A0F] py-8"
-          >
-            <div className="flex items-center gap-8 px-8">
-              {marquee.map((text) => (
-                <span key={text} className="flex items-center gap-8 whitespace-nowrap">
-                  <span className="font-heading text-2xl font-bold text-white">{text}</span>
-                  <span className="text-xl text-muted-foreground">•</span>
-                </span>
-              ))}
-            </div>
-          </ScrollVelocityRow>
-        </ScrollVelocityContainer>
+        <Marquee className="border-y border-[#1F1F2E]/50 bg-gradient-to-r from-[#0A0A0F] via-[#12121A] to-[#0A0A0F] py-8">
+          <div className="flex items-center gap-8 px-8">
+            {marquee.map((text) => (
+              <span key={text} className="flex items-center gap-8 whitespace-nowrap">
+                <span className="font-heading text-2xl font-bold text-white">{text}</span>
+                <span className="text-xl text-muted-foreground">•</span>
+              </span>
+            ))}
+          </div>
+        </Marquee>
       </BlurFade>
 
       {/* Features */}

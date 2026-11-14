@@ -1,7 +1,4 @@
-/**
- * Static site content.
- * Edit the text here — it replaces the old admin panel and `site_settings` table.
- */
+/** Static site content: brand name, hero text, contact details. Edit the text here. */
 export const site = {
   name: 'THE NU365',
   tagline: 'Canada-Wide Research Peptides',

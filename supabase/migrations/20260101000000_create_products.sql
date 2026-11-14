@@ -20,6 +20,10 @@ create table if not exists public.products (
 
 alter table public.products enable row level security;
 
+-- Table privilege first, then the row policy below. Without this grant the API
+-- answers 401 "permission denied" even though the policy allows the read.
+grant select on public.products to anon, authenticated;
+
 drop policy if exists "Anyone can read products" on public.products;
 create policy "Anyone can read products"
   on public.products for select

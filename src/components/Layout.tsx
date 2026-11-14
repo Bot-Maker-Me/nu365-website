@@ -3,7 +3,7 @@ import { Outlet, useLocation } from 'react-router-dom';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 
-export function Spinner() {
+function Spinner() {
   return (
     <div className="flex min-h-[60vh] items-center justify-center">
       <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
