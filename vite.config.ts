@@ -1,31 +1,22 @@
 import react from '@vitejs/plugin-react';
-import { defineConfig } from 'vite';
 import path from 'node:path';
-import dyadComponentTagger from '@dyad-sh/react-vite-component-tagger';
+import { defineConfig } from 'vite';
 
 export default defineConfig({
-  plugins: [dyadComponentTagger(), react()],
+  plugins: [react()],
   resolve: {
-    alias: {
-      '@': path.resolve(__dirname, './src'),
-    },
-  },
-  optimizeDeps: {
-    exclude: ['lucide-react'],
+    alias: { '@': path.resolve(__dirname, './src') },
   },
   build: {
-    outDir: 'dist',
-    sourcemap: true,
     rollupOptions: {
       output: {
+        // Long-lived libraries get their own files so browsers keep them cached between deploys.
         manualChunks: {
-          vendor: ['react', 'react-dom', 'react-router-dom'],
-          ui: ['framer-motion', 'lucide-react'],
+          react: ['react', 'react-dom', 'react-router-dom'],
+          motion: ['framer-motion'],
         },
       },
     },
   },
-  server: {
-    port: 3000,
-  },
+  server: { port: 3000 },
 });

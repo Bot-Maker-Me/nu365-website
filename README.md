@@ -1,63 +1,59 @@
-# NovaBio — Research Compounds Catalog
+# THE NU365 website
 
-A modern, animated e-commerce catalog for research compounds built with React, Vite, TypeScript, Tailwind CSS, shadcn/ui, Framer Motion, and Supabase.
+Product catalog and enquiry site. React + Vite + TypeScript + Tailwind, with Supabase for the product list and Resend for enquiry emails.
 
-## Features
+## How it works
 
-- **Landing Page** — Animated hero with gradient headline, feature grid, product preview, trust badges
-- **Shop Page** — Product grid with instant search, category pills, sort dropdown
-- **Product Detail** — Large image with zoom hover, quantity selector, inquiry dialog with mailto link
-- **Admin Dashboard** — Protected route with sidebar layout, product table, add/edit/delete via dialogs, inline price/quantity editing, stock toggle
-- **Auth** — Supabase email/password authentication protecting admin routes
+| Part | What it does |
+| --- | --- |
+| `src/pages` | Home, Shop, Product detail, Enquiry form, Privacy, Terms |
+| `src/config/site.ts` | Brand name, hero text, contact email, address — edit text here |
+| `src/lib/products.ts` | Loads products from Supabase and caches them in the browser |
+| `api/enquiry.js` | Serverless function that emails enquiries (Resend) |
+| `public/products/` | Product images (WebP, named `<slug>.webp`) |
+| `supabase/` | Database schema and the product seed |
 
-## Tech Stack
-
-- React + Vite + TypeScript
-- Tailwind CSS + shadcn/ui
-- Framer Motion (animations)
-- Supabase (database + auth)
-- Lucide React (icons)
-
-## Setup
-
-1. Install dependencies:
-   ```bash
-   npm install
-   ```
-
-2. The Supabase project is pre-provisioned. Environment variables (`VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`) are pre-populated in `.env`.
-
-3. Start the dev server:
-   ```bash
-   npm run dev
-   ```
-
-4. To access the admin dashboard, create an admin user through Supabase Auth (email/password), then navigate to `/login` and sign in.
-
-## Database Schema
-
-The `products` table:
-
-| Column       | Type         | Description                    |
-|--------------|--------------|--------------------------------|
-| id           | uuid (PK)    | Auto-generated                 |
-| name         | text         | Compound name                  |
-| slug         | text (unique)| URL-friendly identifier         |
-| description  | text         | Detailed description            |
-| price        | numeric      | Price in USD                   |
-| quantity     | int          | Available inventory             |
-| in_stock     | boolean      | Stock status                    |
-| image_url    | text         | Product image URL               |
-| category     | text         | Compound category               |
-| created_at   | timestamptz  | Creation timestamp              |
-
-### RLS Policies
-
-- **Public SELECT** — Anyone can browse products
-- **Authenticated INSERT/UPDATE/DELETE** — Only signed-in admins can manage products
-
-## Build
+## Run locally
 
 ```bash
-npm run build
+npm install
+cp .env.example .env.local   # fill in the values
+npm run dev
 ```
+
+The enquiry API (`/api/enquiry`) only runs on Vercel or with `vercel dev`.
+
+## Environment variables
+
+| Variable | Where | Purpose |
+| --- | --- | --- |
+| `VITE_SUPABASE_URL` | build | Supabase project URL |
+| `VITE_SUPABASE_ANON_KEY` | build | Supabase public (anon / publishable) key |
+| `RESEND_API_KEY` | server | Sends enquiry emails |
+| `RECIPIENT_EMAIL` | server | Inbox that receives enquiries |
+| `FROM_EMAIL` | server, optional | Sender on a domain verified in Resend |
+
+Set them in Vercel → Project → Settings → Environment Variables, then redeploy.
+
+## Managing products
+
+There is no admin panel. Use the Supabase dashboard → **Table Editor → products**:
+
+- **Add**: insert a row. `slug` must be unique and URL-safe (`bpc-157-10mg`). Put the image in `public/products/<slug>.webp`, set `image_url` to `/products/<slug>.webp`, and redeploy.
+- **Edit / delete**: change or delete the row. Visitors see changes within a page load.
+- Convert new images to WebP, about 900 px tall, before adding them (large images are what make sites slow).
+
+## Moving to a new Supabase project
+
+1. Create a project at supabase.com.
+2. SQL Editor → run `supabase/migrations/20260101000000_create_products.sql`, then `supabase/seed.sql`.
+3. Settings → API: copy the **Project URL** and the **anon / publishable key**.
+4. Put them in Vercel as `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`, then redeploy.
+
+Use a fresh project rather than the old one: the old table has duplicate "v2/v3" rows and image paths that no longer exist.
+
+## Performance notes
+
+- Images are WebP (about 3 MB for the whole catalog; it was 180 MB of PNG).
+- Products are cached in `localStorage` and refreshed in the background, so repeat visits show instantly.
+- Pages load on demand; hashed JS/CSS and product images are sent with long cache headers (`vercel.json`).
