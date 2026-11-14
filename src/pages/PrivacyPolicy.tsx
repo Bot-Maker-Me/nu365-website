@@ -1,11 +1,8 @@
-import { Navbar } from '@/components/Navbar';
-import { Footer } from '@/components/Footer';
 import { motion } from 'framer-motion';
 
-export function PrivacyPolicy() {
+export default function PrivacyPolicy() {
   return (
-    <div className="min-h-screen bg-[#0A0A0F]">
-      <Navbar />
+    <>
       <div className="pt-32 max-w-4xl mx-auto px-6 lg:px-8 pb-12">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -100,7 +97,6 @@ export function PrivacyPolicy() {
           </div>
         </motion.div>
       </div>
-      <Footer />
-    </div>
+    </>
   );
 }

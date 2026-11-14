@@ -24,5 +24,7 @@ export default tseslint.config(
         { allowConstantExport: true },
       ],
     },
-  }
+  },
+  // shadcn components export variants/hooks next to the component by design
+  { files: ['src/components/ui/**'], rules: { 'react-refresh/only-export-components': 'off' } }
 );

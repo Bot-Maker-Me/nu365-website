@@ -1,261 +1,94 @@
-import { useEffect, useMemo, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useMemo, useState } from 'react';
 import { Search, SlidersHorizontal } from 'lucide-react';
-import { Navbar } from '@/components/Navbar';
-import { Footer } from '@/components/Footer';
-import { ProductCard } from '@/components/ProductCard';
-import { supabase, type Product } from '@/lib/supabaseClient';
-import { mergeProductCatalog } from '@/lib/productCatalog';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+import { ProductGrid } from '@/components/ProductGrid';
 import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useProducts } from '@/lib/products';
 
-type SortKey = 'name-asc' | 'name-desc';
+type Sort = 'asc' | 'desc';
 
-const container = {
-  hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-    },
-  },
-};
-
-const item = {
-  hidden: { opacity: 0, y: 20 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] } },
-};
-
-export function ShopPage() {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+export default function ShopPage() {
+  const { products, loading, error } = useProducts();
   const [search, setSearch] = useState('');
-  const [debouncedSearch, setDebouncedSearch] = useState('');
   const [category, setCategory] = useState('all');
-  const [sort, setSort] = useState<SortKey>('name-asc');
+  const [sort, setSort] = useState<Sort>('asc');
 
-  useEffect(() => {
-    const timer = setTimeout(() => setDebouncedSearch(search), 200);
-    return () => clearTimeout(timer);
-  }, [search]);
+  const categories = useMemo(
+    () => [...new Set((products ?? []).map((p) => p.category).filter(Boolean))] as string[],
+    [products]
+  );
 
-  useEffect(() => {
-    supabase
-      .from('products')
-      .select('*')
-      .order('created_at', { ascending: false })
-      .then(({ data, error: fetchError }) => {
-        if (fetchError) {
-          setProducts(mergeProductCatalog([]));
-          setError(null);
-        } else {
-          setProducts(mergeProductCatalog(data ?? []));
-        }
-        setLoading(false);
-      });
-  }, []);
-
-  const categories = useMemo(() => {
-    const set = new Set(products.map((p) => p.category).filter(Boolean) as string[]);
-    return ['all', ...Array.from(set)];
-  }, [products]);
-
-  const filtered = useMemo(() => {
-    let result = products;
-
-    if (category !== 'all') {
-      result = result.filter((p) => p.category === category);
-    }
-
-    if (debouncedSearch.trim()) {
-      const q = debouncedSearch.toLowerCase();
-      result = result.filter(
-        (p) =>
-          p.name.toLowerCase().includes(q) ||
-          (p.description ?? '').toLowerCase().includes(q)
-      );
-    }
-
-    const sorted = [...result];
-    switch (sort) {
-      case 'name-asc':
-        sorted.sort((a, b) => a.name.localeCompare(b.name));
-        break;
-      case 'name-desc':
-        sorted.sort((a, b) => b.name.localeCompare(a.name));
-        break;
-    }
-    return sorted;
-  }, [products, debouncedSearch, category, sort]);
+  const visible = useMemo(() => {
+    const query = search.trim().toLowerCase();
+    return (products ?? [])
+      .filter((p) => category === 'all' || p.category === category)
+      .filter((p) => !query || `${p.name} ${p.description ?? ''}`.toLowerCase().includes(query))
+      .sort((a, b) => a.name.localeCompare(b.name) * (sort === 'asc' ? 1 : -1));
+  }, [products, search, category, sort]);
 
   return (
-    <div className="min-h-screen bg-[#0A0A0F]">
-      <Navbar />
-
-      <section className="relative pt-32 pb-12">
-        <div className="absolute inset-0 grid-pattern opacity-20" />
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[300px] bg-accent/5 rounded-full blur-[100px]" />
-
-        <div className="relative max-w-7xl mx-auto px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <span className="text-xs font-semibold uppercase tracking-[0.2em] gradient-text">
-              Catalog
-            </span>
-            <h1 className="mt-3 text-4xl md:text-5xl font-bold font-heading tracking-tight">
-              Research Compounds
-            </h1>
-            <p className="mt-4 text-muted-foreground max-w-xl">
-              Browse our full catalog of premium-grade research chemicals, peptides, and reagents.
-            </p>
-          </motion.div>
+    <>
+      <section className="relative pb-12 pt-32">
+        <div className="grid-pattern absolute inset-0 opacity-20" />
+        <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
+          <span className="gradient-text text-xs font-semibold uppercase tracking-[0.2em]">Catalog</span>
+          <h1 className="mt-3 font-heading text-4xl font-bold tracking-tight md:text-5xl">Research Compounds</h1>
+          <p className="mt-4 max-w-xl text-muted-foreground">
+            Browse our full catalog of premium-grade research chemicals, peptides, and reagents.
+          </p>
         </div>
       </section>
 
-      <section className="relative pb-24">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          {/* Controls */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.1 }}
-            className="flex flex-col md:flex-row gap-4 mb-10"
-          >
+      <section className="pb-24">
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+          <div className="mb-8 flex flex-col gap-4 md:flex-row">
             <div className="relative flex-1">
-              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Search className="pointer-events-none absolute left-3.5 z-10 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
                 placeholder="Search compounds..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="pl-10 h-11 glass-card border-[#1F1F2E] bg-secondary/20"
+                className="glass-card h-11 border-[#1F1F2E] bg-secondary/20 pl-10"
               />
             </div>
+            <Select value={sort} onValueChange={(value) => setSort(value as Sort)}>
+              <SelectTrigger className="glass-card h-11 w-full border-[#1F1F2E] bg-secondary/20 md:w-[170px]">
+                <SlidersHorizontal className="mr-2 h-4 w-4 text-muted-foreground" />
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent className="glass border-[#1F1F2E] bg-[#12121A]">
+                <SelectItem value="asc">Name: A to Z</SelectItem>
+                <SelectItem value="desc">Name: Z to A</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
 
-            <div className="flex gap-3">
-              <Select value={category} onValueChange={setCategory}>
-                <SelectTrigger className="w-[160px] h-11 glass-card border-[#1F1F2E] bg-secondary/20">
-                  <SelectValue placeholder="Category" />
-                </SelectTrigger>
-                <SelectContent className="glass border-[#1F1F2E] bg-[#12121A]">
-                  {categories.map((cat) => (
-                    <SelectItem key={cat} value={cat}>
-                      {cat === 'all' ? 'All Categories' : cat}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-
-              <Select value={sort} onValueChange={(v) => setSort(v as SortKey)}>
-                <SelectTrigger className="w-[160px] h-11 glass-card border-[#1F1F2E] bg-secondary/20">
-                  <SlidersHorizontal className="w-4 h-4 mr-2 text-muted-foreground" />
-                  <SelectValue placeholder="Sort" />
-                </SelectTrigger>
-                <SelectContent className="glass border-[#1F1F2E] bg-[#12121A]">
-                  <SelectItem value="name-asc">Name: A to Z</SelectItem>
-                  <SelectItem value="name-desc">Name: Z to A</SelectItem>
-                </SelectContent>
-              </Select>
+          {/* Category filter only appears once there is more than one category */}
+          {categories.length > 1 && (
+            <div className="mb-8 flex flex-wrap gap-2">
+              {['all', ...categories].map((name) => (
+                <button
+                  key={name}
+                  onClick={() => setCategory(name)}
+                  className={`rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${
+                    category === name ? 'gradient-bg text-white' : 'glass-card text-muted-foreground hover:text-foreground'
+                  }`}
+                >
+                  {name === 'all' ? 'All' : name}
+                </button>
+              ))}
             </div>
-          </motion.div>
+          )}
 
-          {/* Category pills */}
-          <motion.div
-            className="flex flex-wrap gap-2 mb-8"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.2 }}
-          >
-            {categories.map((cat, index) => (
-              <motion.button
-                key={cat}
-                onClick={() => setCategory(cat)}
-                className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200 ${
-                  category === cat
-                    ? 'gradient-bg text-white'
-                    : 'glass-card text-muted-foreground hover:text-foreground'
-                }`}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.3, delay: 0.3 + index * 0.05 }}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                {cat === 'all' ? 'All' : cat}
-              </motion.button>
-            ))}
-          </motion.div>
-
-          {/* Grid */}
-          <AnimatePresence mode="wait">
-            {loading ? (
-              <motion.div
-                key="loading"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
-              >
-                {Array.from({ length: 6 }).map((_, i) => (
-                  <motion.div
-                    key={i}
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.3, delay: i * 0.05 }}
-                    className="aspect-[3/4] rounded-2xl bg-secondary/20 animate-pulse"
-                  />
-                ))}
-              </motion.div>
-            ) : error ? (
-              <motion.div
-                key="error"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                className="text-center py-20"
-              >
-                <p className="text-red-400 mb-2">Failed to load products</p>
-                <p className="text-sm text-muted-foreground">{error}</p>
-              </motion.div>
-            ) : filtered.length === 0 ? (
-              <motion.div
-                key="empty"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                className="text-center py-20"
-              >
-                <p className="text-muted-foreground">No compounds found matching your criteria.</p>
-              </motion.div>
-            ) : (
-              <motion.div
-                key="products"
-                variants={container}
-                initial="hidden"
-                animate="show"
-                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"
-              >
-                {filtered.map((product, i) => (
-                  <motion.div key={product.id} variants={item}>
-                    <ProductCard product={product} index={i} />
-                  </motion.div>
-                ))}
-              </motion.div>
-            )}
-          </AnimatePresence>
+          <ProductGrid
+            products={visible}
+            loading={loading}
+            error={error}
+            emptyText="No compounds found matching your criteria."
+            columns="lg:grid-cols-3 xl:grid-cols-4"
+          />
         </div>
       </section>
-
-      <Footer />
-    </div>
+    </>
   );
 }

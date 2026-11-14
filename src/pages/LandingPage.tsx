@@ -1,17 +1,23 @@
-import { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Microscope, ShieldCheck, Beaker, Atom, FlaskConical, FileCheck, AlertTriangle } from 'lucide-react';
-import { Navbar } from '@/components/Navbar';
-import { Footer } from '@/components/Footer';
+import {
+  AlertTriangle, ArrowRight, Atom, Beaker, FileCheck, FlaskConical, Microscope, ShieldCheck,
+} from 'lucide-react';
 import { Hero } from '@/components/Hero';
-import { AnimatedButton } from '@/components/AnimatedButton';
+import { ProductGrid } from '@/components/ProductGrid';
 import { SectionHeading } from '@/components/SectionHeading';
-import { ProductCard } from '@/components/ProductCard';
-import { ScrollVelocityContainer, ScrollVelocityRow } from '@/components/ui/scroll-based-velocity';
 import { BlurFade } from '@/components/ui/blur-fade';
-import { supabase, type Product } from '@/lib/supabaseClient';
-import { mergeProductCatalog } from '@/lib/productCatalog';
+import { ScrollVelocityContainer, ScrollVelocityRow } from '@/components/ui/scroll-based-velocity';
+import { useProducts } from '@/lib/products';
+
+const FEATURED_COUNT = 6;
+
+const marquee = [
+  '✨ Premium Research Compounds',
+  '🔬 Lab-Tested Quality',
+  '🚀 Fast Shipping',
+  '🛡️ Secure Packaging',
+  '📋 Full Documentation',
+];
 
 const features = [
   { icon: Microscope, title: 'Precision Synthesized', desc: 'Every compound is synthesized to >99% purity using validated protocols.' },
@@ -22,102 +28,68 @@ const features = [
   { icon: FlaskConical, title: 'Expert Support', desc: 'Direct access to PhD-level scientists for technical consultation.' },
 ];
 
-const trustBadges = [
-  'ISO 9001:2015',
-  'cGMP Compliant',
-  'DEA Licensed',
-  'USP Reference',
-  'Peer Reviewed',
-];
+const trustBadges = ['ISO 9001:2015', 'cGMP Compliant', 'DEA Licensed', 'USP Reference', 'Peer Reviewed'];
 
-export function LandingPage() {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [productsLoading, setProductsLoading] = useState(true);
+const disclaimerTags = ['Research Use Only', 'Not for Human Consumption', '18+ Only'];
 
-  useEffect(() => {
-    supabase
-      .from('products')
-      .select('*')
-      .order('name', { ascending: true })
-      .then(({ data }) => {
-        setProducts(mergeProductCatalog(data ?? []).slice(0, 6));
-        setProductsLoading(false);
-      });
-  }, []);
+const container = 'mx-auto max-w-7xl px-6 lg:px-8';
+
+export default function LandingPage() {
+  const { products, loading, error } = useProducts();
 
   return (
-    <div className="min-h-screen bg-[#0A0A0F]">
-      <Navbar />
-
+    <>
       <Hero />
 
-      {/* Scroll velocity banner */}
+      {/* Scrolling banner */}
       <BlurFade inView>
         <ScrollVelocityContainer>
-          <ScrollVelocityRow baseVelocity={2} direction={1} className="py-8 bg-gradient-to-r from-[#0A0A0F] via-[#12121A] to-[#0A0A0F] border-y border-[#1F1F2E]/50">
+          <ScrollVelocityRow
+            baseVelocity={2}
+            direction={1}
+            className="border-y border-[#1F1F2E]/50 bg-gradient-to-r from-[#0A0A0F] via-[#12121A] to-[#0A0A0F] py-8"
+          >
             <div className="flex items-center gap-8 px-8">
-              <span className="text-2xl font-bold font-heading text-white whitespace-nowrap">✨ Premium Research Compounds</span>
-              <span className="text-xl text-muted-foreground whitespace-nowrap">•</span>
-              <span className="text-2xl font-bold font-heading text-white whitespace-nowrap">🔬 Lab-Tested Quality</span>
-              <span className="text-xl text-muted-foreground whitespace-nowrap">•</span>
-              <span className="text-2xl font-bold font-heading text-white whitespace-nowrap">🚀 Fast Shipping</span>
-              <span className="text-xl text-muted-foreground whitespace-nowrap">•</span>
-              <span className="text-2xl font-bold font-heading text-white whitespace-nowrap">🛡️ Secure Packaging</span>
-              <span className="text-xl text-muted-foreground whitespace-nowrap">•</span>
-              <span className="text-2xl font-bold font-heading text-white whitespace-nowrap">📋 Full Documentation</span>
+              {marquee.map((text) => (
+                <span key={text} className="flex items-center gap-8 whitespace-nowrap">
+                  <span className="font-heading text-2xl font-bold text-white">{text}</span>
+                  <span className="text-xl text-muted-foreground">•</span>
+                </span>
+              ))}
             </div>
           </ScrollVelocityRow>
         </ScrollVelocityContainer>
       </BlurFade>
 
       {/* Features */}
-      <section className="relative py-24">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+      <section className="py-24">
+        <div className={container}>
           <SectionHeading
             center
             eyebrow="Why choose us"
             title="Built for the modern laboratory"
             description="Every aspect of our process is designed to meet the exacting standards of today's leading research institutions."
           />
-
-          <div className="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {features.map((feature, index) => (
-              <motion.div key={feature.title} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.4, delay: index * 0.1 }}>
-                <motion.div
-                  className="glass-card rounded-2xl p-6 h-full"
-                  whileHover={{
-                    scale: 1.02,
-                    boxShadow: "0 0 30px rgba(59, 130, 246, 0.15)"
-                  }}
-                  transition={{
-                    type: "spring",
-                    stiffness: 300,
-                    damping: 20
-                  }}
-                >
-                  <motion.div
-                    className="w-12 h-12 rounded-xl bg-secondary/50 flex items-center justify-center mb-5 border border-[#1F1F2E]"
-                    whileHover={{
-                      rotate: 360,
-                      backgroundColor: "rgba(59, 130, 246, 0.2)"
-                    }}
-                    transition={{ duration: 0.6 }}
-                  >
-                    <feature.icon className="w-6 h-6 text-primary" />
-                  </motion.div>
-                  <h3 className="font-heading font-semibold text-lg mb-2">{feature.title}</h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">{feature.desc}</p>
-                </motion.div>
-              </motion.div>
+          <div className="mt-16 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {features.map(({ icon: Icon, title, desc }, i) => (
+              <BlurFade key={title} inView delay={(i % 3) * 0.1}>
+                <div className="glass-card h-full rounded-2xl p-6 transition-transform hover:scale-[1.02]">
+                  <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-xl border border-[#1F1F2E] bg-secondary/50">
+                    <Icon className="h-6 w-6 text-primary" />
+                  </div>
+                  <h3 className="mb-2 font-heading text-lg font-semibold">{title}</h3>
+                  <p className="text-sm leading-relaxed text-muted-foreground">{desc}</p>
+                </div>
+              </BlurFade>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Product preview */}
-      <section className="relative py-24">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="flex items-end justify-between mb-12 flex-wrap gap-4">
+      {/* Featured products */}
+      <section className="py-24">
+        <div className={container}>
+          <div className="mb-12 flex flex-wrap items-end justify-between gap-4">
             <SectionHeading
               eyebrow="Featured compounds"
               title="From our latest catalog"
@@ -125,106 +97,61 @@ export function LandingPage() {
             />
             <Link
               to="/shop"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-lg border border-white/20 text-white font-semibold hover:bg-white/10 transition-colors"
+              className="inline-flex items-center gap-2 rounded-lg border border-white/20 px-6 py-3 font-semibold text-white transition-colors hover:bg-white/10"
             >
-              View All <ArrowRight className="w-4 h-4" />
+              View All <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
-
-          {productsLoading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {Array.from({ length: 6 }).map((_, i) => (
-                <div key={i} className="aspect-[3/4] rounded-2xl bg-secondary/20 animate-pulse" />
-              ))}
-            </div>
-          ) : products.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {products.map((product, i) => (
-                <BlurFade key={product.id} inView delay={i * 0.1}>
-                  <ProductCard product={product} index={i} />
-                </BlurFade>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-12 text-muted-foreground">
-              No products available yet.
-            </div>
-          )}
+          <ProductGrid
+            products={products?.slice(0, FEATURED_COUNT) ?? null}
+            loading={loading}
+            error={error}
+            emptyText="No products available yet."
+          />
         </div>
       </section>
 
       {/* Trust badges */}
-      <section className="relative py-16">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="flex flex-wrap items-center justify-center gap-x-12 gap-y-6"
-          >
-            {trustBadges.map((badge, index) => (
-              <motion.div
-                key={badge}
-                className="flex items-center gap-2.5"
-                initial={{ opacity: 0, scale: 0.8 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: index * 0.1 }}
-                whileHover={{ scale: 1.1 }}
-              >
-                <motion.div
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                >
-                  <ShieldCheck className="w-5 h-5 text-primary/60" />
-                </motion.div>
-                <span className="text-sm font-medium text-muted-foreground">{badge}</span>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
+      <section className="py-16">
+        <BlurFade inView className={`${container} flex flex-wrap items-center justify-center gap-x-12 gap-y-6`}>
+          {trustBadges.map((badge) => (
+            <span key={badge} className="flex items-center gap-2.5 text-sm font-medium text-muted-foreground">
+              <ShieldCheck className="h-5 w-5 text-primary/60" /> {badge}
+            </span>
+          ))}
+        </BlurFade>
       </section>
 
-      {/* Compliance Disclaimer */}
-      <section className="relative py-12 border-t border-[#1F1F2E]">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="glass-card rounded-2xl p-8 border border-yellow-500/20"
-          >
-            <div className="flex items-start gap-4">
-              <div className="flex-shrink-0">
-                <div className="w-12 h-12 rounded-full bg-yellow-500/20 flex items-center justify-center">
-                  <AlertTriangle className="w-6 h-6 text-yellow-400" />
-                </div>
-              </div>
-              <div className="flex-1">
-                <h3 className="font-heading font-semibold text-lg mb-2 text-yellow-400">Important Legal Disclaimer</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">
-                  All products sold on this website are strictly for research purposes only. These products are not intended for human consumption, diagnostic use, or as therapeutic agents. By purchasing from this site, you acknowledge and agree that you are at least 18 years of age and will use these products solely for legitimate research purposes in compliance with all applicable local, state, and federal laws and regulations. The purchaser assumes all liability for the use or misuse of these products.
-                </p>
-                <div className="mt-4 flex flex-wrap gap-2">
-                  <span className="px-3 py-1 rounded-full bg-yellow-500/10 text-yellow-400 text-xs font-medium border border-yellow-500/20">
-                    Research Use Only
+      {/* Legal disclaimer */}
+      <section className="border-t border-[#1F1F2E] py-12">
+        <div className={container}>
+          <BlurFade inView className="glass-card flex items-start gap-4 rounded-2xl border border-yellow-500/20 p-8">
+            <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-yellow-500/20">
+              <AlertTriangle className="h-6 w-6 text-yellow-400" />
+            </div>
+            <div>
+              <h3 className="mb-2 font-heading text-lg font-semibold text-yellow-400">Important Legal Disclaimer</h3>
+              <p className="text-sm leading-relaxed text-muted-foreground">
+                All products sold on this website are strictly for research purposes only. These products are not
+                intended for human consumption, diagnostic use, or as therapeutic agents. By purchasing from this
+                site, you acknowledge and agree that you are at least 18 years of age and will use these products
+                solely for legitimate research purposes in compliance with all applicable local, state, and federal
+                laws and regulations. The purchaser assumes all liability for the use or misuse of these products.
+              </p>
+              <div className="mt-4 flex flex-wrap gap-2">
+                {disclaimerTags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="rounded-full border border-yellow-500/20 bg-yellow-500/10 px-3 py-1 text-xs font-medium text-yellow-400"
+                  >
+                    {tag}
                   </span>
-                  <span className="px-3 py-1 rounded-full bg-yellow-500/10 text-yellow-400 text-xs font-medium border border-yellow-500/20">
-                    Not for Human Consumption
-                  </span>
-                  <span className="px-3 py-1 rounded-full bg-yellow-500/10 text-yellow-400 text-xs font-medium border border-yellow-500/20">
-                    18+ Only
-                  </span>
-                </div>
+                ))}
               </div>
             </div>
-          </motion.div>
+          </BlurFade>
         </div>
       </section>
-
-      <Footer />
-    </div>
+    </>
   );
 }
