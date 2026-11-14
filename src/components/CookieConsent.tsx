@@ -1,88 +1,70 @@
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useEffect, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { X, Cookie } from 'lucide-react';
+import { Cookie, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-export function CookieConsent() {
-  const [showBanner, setShowBanner] = useState(false);
+const STORAGE_KEY = 'cookieConsent';
 
+/** Bottom banner asking for cookie consent. The answer is remembered in localStorage. */
+export function CookieConsent() {
+  const [show, setShow] = useState(false);
+
+  // First-time visitors see the banner after a short delay.
   useEffect(() => {
-    // Check if user has already consented
-    const consent = localStorage.getItem('cookieConsent');
-    if (!consent) {
-      // Show banner after a short delay
-      const timer = setTimeout(() => {
-        setShowBanner(true);
-      }, 2000);
-      return () => clearTimeout(timer);
-    }
+    if (localStorage.getItem(STORAGE_KEY)) return;
+    const timer = setTimeout(() => setShow(true), 2000);
+    return () => clearTimeout(timer);
   }, []);
 
-  const handleAccept = () => {
-    localStorage.setItem('cookieConsent', 'accepted');
-    setShowBanner(false);
+  const answer = (choice: 'accepted' | 'declined') => {
+    localStorage.setItem(STORAGE_KEY, choice);
+    setShow(false);
   };
-
-  const handleDecline = () => {
-    localStorage.setItem('cookieConsent', 'declined');
-    setShowBanner(false);
-  };
-
-  if (!showBanner) return null;
 
   return (
     <AnimatePresence>
-      {showBanner && (
+      {show && (
         <motion.div
           initial={{ y: 100, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 100, opacity: 0 }}
-          transition={{ type: "spring", duration: 0.5 }}
-          className="fixed bottom-0 left-0 right-0 z-50 p-4"
+          transition={{ type: 'spring', duration: 0.5 }}
+          className="fixed inset-x-0 bottom-0 z-50 p-4"
         >
-          <div className="max-w-4xl mx-auto glass-card rounded-2xl p-6 border border-[#1F1F2E]">
-            <div className="flex flex-col md:flex-row items-start md:items-center gap-4">
-              <div className="flex-shrink-0">
-                <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center">
-                  <Cookie className="w-6 h-6 text-primary" />
-                </div>
-              </div>
-              
-              <div className="flex-1">
-                <h3 className="font-semibold mb-1">Cookie Consent</h3>
-                <p className="text-sm text-muted-foreground">
-                  We use cookies to improve your experience and analyze site traffic. 
-                  By clicking "Accept", you agree to our use of cookies as described in our 
-                  <Link to="/privacy-policy" className="text-primary hover:underline ml-1">Privacy Policy</Link>.
-                </p>
-              </div>
-
-              <div className="flex items-center gap-2 flex-shrink-0">
-                <Button
-                  onClick={handleDecline}
-                  variant="outline"
-                  size="sm"
-                  className="border-[#1F1F2E] hover:bg-[#1F1F2E]"
-                >
-                  Decline
-                </Button>
-                <Button
-                  onClick={handleAccept}
-                  size="sm"
-                  className="gradient-bg text-white border-transparent"
-                >
-                  Accept
-                </Button>
-              </div>
-
-              <button
-                onClick={() => setShowBanner(false)}
-                className="absolute top-4 right-4 text-muted-foreground hover:text-foreground transition-colors"
-              >
-                <X className="w-4 h-4" />
-              </button>
+          <div className="glass-card relative mx-auto flex max-w-4xl flex-col items-start gap-4 rounded-2xl border border-[#1F1F2E] p-6 md:flex-row md:items-center">
+            <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-primary/20">
+              <Cookie className="h-6 w-6 text-primary" />
             </div>
+
+            <div className="flex-1">
+              <h3 className="mb-1 font-semibold">Cookie Consent</h3>
+              <p className="text-sm text-muted-foreground">
+                We use cookies to improve your experience and analyze site traffic. By clicking "Accept", you agree to
+                our use of cookies as described in our
+                <Link to="/privacy-policy" className="ml-1 text-primary hover:underline">
+                  Privacy Policy
+                </Link>
+                .
+              </p>
+            </div>
+
+            <div className="flex flex-shrink-0 items-center gap-2">
+              <Button onClick={() => answer('declined')} variant="outline" size="sm" className="border-[#1F1F2E] hover:bg-[#1F1F2E]">
+                Decline
+              </Button>
+              <Button onClick={() => answer('accepted')} size="sm" className="gradient-bg border-transparent text-white">
+                Accept
+              </Button>
+            </div>
+
+            <button
+              onClick={() => setShow(false)}
+              aria-label="Dismiss"
+              className="absolute right-4 top-4 text-muted-foreground transition-colors hover:text-foreground"
+            >
+              <X className="h-4 w-4" />
+            </button>
           </div>
         </motion.div>
       )}

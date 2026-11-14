@@ -50,8 +50,6 @@ There is no admin panel. Use the Supabase dashboard → **Table Editor → produ
 3. Settings → API: copy the **Project URL** and the **anon / publishable key**.
 4. Put them in Vercel as `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`, then redeploy.
 
-Use a fresh project rather than the old one: the old table has duplicate "v2/v3" rows and image paths that no longer exist.
-
 ## Performance notes
 
 - Images are WebP (about 3 MB for the whole catalog; it was 180 MB of PNG).

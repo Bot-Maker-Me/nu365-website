@@ -1,15 +1,16 @@
 import { Link } from 'react-router-dom';
 import type { Product } from '@/lib/products';
-import { CardContainer, CardBody, CardItem } from '@/components/ui/3d-card';
+import { CardBody, CardContainer, CardItem } from '@/components/ui/3d-card';
 
+/** Product tile for the grids. Tilts in 3D on hover; image, title and text lift off by different amounts. */
 export function ProductCard({ product }: { product: Product }) {
   return (
     <div className="mx-auto w-[60%] md:w-[65%]">
       <CardContainer className="w-full" containerClassName="py-0">
-        <CardBody className="h-auto w-full [&>*]:[transform-style:preserve-3d]">
+        <CardBody className="h-auto w-full">
           <Link to={`/product/${product.slug}`} className="group block">
             <div className="glass-card h-full overflow-hidden rounded-2xl">
-              <CardItem translateZ="20" className="w-full">
+              <CardItem translateZ={20} className="w-full">
                 <div className="relative aspect-[4/5] overflow-hidden bg-white/5">
                   {product.image_url && (
                     <img
@@ -31,15 +32,13 @@ export function ProductCard({ product }: { product: Product }) {
               </CardItem>
 
               <div className="p-5">
-                <CardItem translateZ="10" className="w-full">
+                <CardItem translateZ={10} className="w-full">
                   <h3 className="mb-1 font-heading text-base font-semibold transition-all group-hover:gradient-text">
                     {product.name}
                   </h3>
                 </CardItem>
-                <CardItem translateZ="5" className="w-full">
-                  <p className="line-clamp-2 text-sm leading-relaxed text-muted-foreground">
-                    {product.description}
-                  </p>
+                <CardItem translateZ={5} className="w-full">
+                  <p className="line-clamp-2 text-sm leading-relaxed text-muted-foreground">{product.description}</p>
                 </CardItem>
               </div>
             </div>
