@@ -13,3 +13,8 @@ dist
 .vscode
 .idea
 .DS_Store
+
+.dyad/
+AI_RULES.md
+SECRETS.md
+.env
